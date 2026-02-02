@@ -1,0 +1,142 @@
+@startuml Diagramme_Deploiement_Etudiant2_Cerbere
+
+!define NODE rectangle
+!define DEVICE node
+!define COMPONENT component
+
+title Diagramme de Déploiement - Étudiant 2\nGestion de la demande d'accès - Projet CERBÈRE
+
+skinparam componentStyle rectangle
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+
+' Définition des nœuds matériels
+DEVICE "Raspberry Pi 4\n<<serveur>>" as RaspPi {
+    DEVICE "Système d'exploitation\nRaspbian OS" as OS {
+        
+        ' Serveur Web
+        DEVICE "Serveur Web Apache\n<<Web Server>>" as Apache {
+            COMPONENT "PHP 7.4" as PHP
+            COMPONENT "Module SSL/TLS" as SSL
+        }
+        
+        ' Serveur de base de données
+        DEVICE "Serveur MySQL\n<<Database Server>>" as MySQL {
+            database "Base de données\nCERBERE" as BDD {
+                COMPONENT "Table utilisateurs" as TableUsers
+                COMPONENT "Table badges" as TableBadges
+                COMPONENT "Table journalAcces" as TableLogs
+                COMPONENT "Table roles" as TableRoles
+                COMPONENT "Table photos" as TablePhotos
+            }
+            COMPONENT "Moteur InnoDB" as InnoDB
+            COMPONENT "Système d'authentification" as AuthMySQL
+        }
+        
+        ' Services applicatifs
+        DEVICE "Services Application" as AppServices {
+            COMPONENT "API REST\n(Back-End)" as API
+            COMPONENT "Module de sécurité" as Security
+            COMPONENT "Gestionnaire de sessions" as SessionMgr
+        }
+    }
+}
+
+' Réseau local
+cloud "Réseau Local Lycée\n192.168.1.0/24" as LAN {
+    DEVICE "Switch Ethernet" as Switch
+}
+
+' Postes clients
+DEVICE "Poste Administrateur\n<<Client Web>>" as AdminPC {
+    COMPONENT "Navigateur Web\n(Chrome/Firefox)" as Browser1
+    COMPONENT "Interface Admin\n(HTML/CSS/JS)" as WebInterface
+}
+
+DEVICE "Smartphone\n<<Application Mobile>>" as Mobile {
+    COMPONENT "Application Mobile\n(Étudiant 3)" as MobileApp
+}
+
+
+
+' Connexions réseau
+RaspPi -down-> Switch : "Ethernet\n100 Mbps"
+AdminPC -up-> Switch : "Ethernet\n100 Mbps"
+Mobile -up-> Switch : "WiFi\n802.11n"
+
+
+' Communication interne
+Apache --> PHP : "CGI"
+PHP --> API : "Appels\nfonctions"
+API --> Security : "Validation\nAuthentification"
+API --> SessionMgr : "Gestion\nsessions"
+API --> MySQL : "Requêtes SQL\nPort 3306"
+MySQL --> BDD : "Transactions"
+MySQL --> InnoDB : "Moteur stockage"
+MySQL --> AuthMySQL : "Contrôle accès"
+
+' Relations entre tables
+TableUsers -[hidden]down- TableBadges
+TableBadges -[hidden]down- TableLogs
+TableLogs -[hidden]down- TableRoles
+TableRoles -[hidden]down- TablePhotos
+
+' Notes explicatives
+note right of RaspPi
+  **Configuration matérielle :**
+  • CPU : ARM Cortex-A72 Quad-core
+  • RAM : 4 GB
+  • Stockage : MicroSD 32 GB
+  • Réseau : Ethernet Gigabit
+  • Alimentation : 5V 3A
+end note
+
+note right of Apache
+  **Configuration serveur :**
+  • Port HTTP : 80 (redirection)
+  • Port HTTPS : 443
+  • DocumentRoot : /var/www/html
+  • Module mod_rewrite activé
+  • Certificat SSL auto-signé
+end note
+
+note right of MySQL
+  **Configuration BDD :**
+  • Port : 3306
+  • Moteur : InnoDB
+  • Charset : UTF-8
+  • Utilisateurs :
+    - admin_cerbere (ALL)
+    - app_cerbere (SELECT/INSERT/UPDATE)
+end note
+
+
+note left of Security
+  **Mécanismes de sécurité :**
+  • Hashage bcrypt pour mots de passe
+  • Tokens JWT pour authentification
+  • Protection contre injection SQL
+  • Protection XSS et CSRF
+  • Validation des entrées
+  • Limitation du débit (rate limiting)
+end note
+
+note bottom of LAN
+  **Adressage IP :**
+  • Raspberry Pi serveur : 192.168.1.10
+  • Raspberry Pi RFID : 192.168.1.11
+  • Raspberry Pi PIR : 192.168.1.12
+  • Poste Admin : 192.168.1.20
+  • Passerelle : 192.168.1.1
+end note
+
+legend right
+  |= Symbole |= Signification |
+  | <<device>> | Équipement matériel |
+  | <<serveur>> | Serveur applicatif |
+  | <<component>> | Composant logiciel |
+  | —— | Connexion physique |
+  | ..> | Protocole de communication |
+endlegend
+
+@enduml

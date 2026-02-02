@@ -1,0 +1,254 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" version="29.2.9">
+  <diagram name="Diagramme de Déploiement CERBÈRE" id="Hq5G2yZTIFE9s62323Ck">
+    <mxGraphModel dx="1901" dy="813" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="light-dark(#FFFFFF,#FF0F0F)" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="9ODFNheKsxCTLkZoRMss-1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1" value="Diagramme de Déploiement UML - Système CERBÈRE&#xa;BTS CIEL Option IR - Lycée Joseph Gaillard - Session 2026" vertex="1">
+          <mxGeometry height="60" width="800" x="90" y="930" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#B3D9FF;strokeColor=#1976D2;strokeWidth=2;fontSize=11;fontStyle=1;align=center;verticalAlign=top;" value="&lt;&lt;device node&gt;&gt;&#xa;:rpi_w13 : Raspberry Pi 4&#xa;IP: 192.168.1.101&#xa;RAM: 4GB | ARM Cortex-A72" vertex="1">
+          <mxGeometry height="480" width="280" x="190" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;fontSize=10;align=center;verticalAlign=top;" value="&lt;&lt;execution environment&gt;&gt;&#xa;Raspbian OS (Debian 11)&#xa;Python 3.9 | GPIO Library" vertex="1">
+          <mxGeometry height="400" width="240" x="210" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;" value="&lt;&lt;artifact&gt;&gt;&#xa;rfid_reader.py&#xa;SPI Interface&#xa;RC522 Reader" vertex="1">
+          <mxGeometry height="60" width="200" x="230" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;" value="&lt;&lt;artifact&gt;&gt;&#xa;gache_ctrl.py&#xa;GPIO Control&#xa;Relay 12V" vertex="1">
+          <mxGeometry height="60" width="200" x="230" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;" value="&lt;&lt;artifact&gt;&gt;&#xa;mqtt_client.py&#xa;Paho MQTT&#xa;Publisher" vertex="1">
+          <mxGeometry height="60" width="200" x="230" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#388E3C;fontSize=9;" value="Module RFID&#xa;RC522&#xa;13.56 MHz&#xa;SPI" vertex="1">
+          <mxGeometry height="60" width="200" x="-70" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFECB3;strokeColor=#FFA000;fontSize=9;" value="Gâche Électrique&#xa;12V DC&#xa;GPIO Control&#xa;Porte W13" vertex="1">
+          <mxGeometry height="60" width="200" x="230" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-9" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#D32F2F;strokeWidth=2;fontSize=11;fontStyle=1;align=center;verticalAlign=top;" value="&lt;&lt;device node&gt;&gt;&#xa;:rpi_lab : Raspberry Pi 4&#xa;IP: 192.168.1.100&#xa;RAM: 4GB | ARM Cortex-A72" vertex="1">
+          <mxGeometry height="480" width="280" x="550" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-10" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;fontSize=10;align=center;verticalAlign=top;" value="&lt;&lt;execution environment&gt;&gt;&#xa;Raspbian OS (Debian 11)&#xa;Python 3.9 | OpenCV | picamera" vertex="1">
+          <mxGeometry height="400" width="240" x="570" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-11" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;" value="&lt;&lt;artifact&gt;&gt;&#xa;pir_detector.py&#xa;GPIO Pin 17&#xa;Motion Detection" vertex="1">
+          <mxGeometry height="60" width="200" x="590" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-12" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;" value="&lt;&lt;artifact&gt;&gt;&#xa;camera_ctrl.py&#xa;CSI Interface&#xa;OpenCV + picamera" vertex="1">
+          <mxGeometry height="60" width="200" x="590" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-13" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;" value="&lt;&lt;artifact&gt;&gt;&#xa;ventouse_ctrl.py&#xa;GPIO Pin 22&#xa;Relay Control" vertex="1">
+          <mxGeometry height="60" width="200" x="590" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-14" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;" value="&lt;&lt;artifact&gt;&gt;&#xa;mqtt_client.py&#xa;Paho MQTT&#xa;Publisher" vertex="1">
+          <mxGeometry height="60" width="200" x="590" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-15" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#388E3C;fontSize=9;" value="Capteur PIR&#xa;HC-SR501&#xa;120° / 3-7m&#xa;Infrarouge Passif" vertex="1">
+          <mxGeometry height="60" width="120" x="490" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-16" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#388E3C;fontSize=9;" value="Caméra Pi v2&#xa;8MP&#xa;CSI Interface&#xa;Capture Photo" vertex="1">
+          <mxGeometry height="60" width="120" x="630" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-17" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFECB3;strokeColor=#FFA000;fontSize=9;" value="Ventouse&#xa;Magnétique&#xa;12V / 180kg&#xa;GPIO Pin 22" vertex="1">
+          <mxGeometry height="60" width="120" x="770" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-18" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFECB3;strokeColor=#FFA000;fontSize=9;" value="Buzzer&#xa;Sonnerie&#xa;GPIO Pin 27" vertex="1">
+          <mxGeometry height="60" width="100" x="910" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-19" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#388E3C;strokeWidth=2;fontSize=11;fontStyle=1;align=center;verticalAlign=top;" value="&lt;&lt;device node&gt;&gt;&#xa;:rpi_server : Raspberry Pi 4&#xa;IP: 192.168.1.10 (Serveur)&#xa;RAM: 4GB | SSD: 256GB" vertex="1">
+          <mxGeometry height="480" width="320" x="910" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-20" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;fontSize=10;align=center;verticalAlign=top;" value="&lt;&lt;execution environment&gt;&gt;&#xa;Debian 11 Server&#xa;Apache 2.4 | PHP 8.1 | MySQL 8.0" vertex="1">
+          <mxGeometry height="400" width="280" x="930" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-21" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;" value="&lt;&lt;artifact&gt;&gt;&#xa;admin_website&#xa;HTML5/CSS3/JS&#xa;Bootstrap 5" vertex="1">
+          <mxGeometry height="60" width="120" x="950" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-22" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;" value="&lt;&lt;artifact&gt;&gt;&#xa;rest_api.php&#xa;PHP 8.1&#xa;JSON Response" vertex="1">
+          <mxGeometry height="60" width="120" x="1080" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-23" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;" value="&lt;&lt;artifact&gt;&gt;&#xa;auth_manager.php&#xa;JWT Tokens&#xa;AES-256" vertex="1">
+          <mxGeometry height="60" width="120" x="950" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-24" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF59D;strokeColor=#F9A825;fontSize=9;" value="Mosquitto Broker&#xa;MQTT v3.1.1&#xa;Port: 1883" vertex="1">
+          <mxGeometry height="60" width="120" x="1080" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-25" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#F8BBD0;strokeColor=#C2185B;fontSize=9;" value="MySQL 8.0&#xa;cerbere_db&#xa;&#xa;Tables:&#xa;• users&#xa;• badges&#xa;• access_logs&#xa;• photos&#xa;&#xa;Chiffrement:&#xa;AES-256" vertex="1">
+          <mxGeometry height="170" width="120" x="950" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-26" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF59D;strokeColor=#F9A825;fontSize=9;" value="File Storage&#xa;/var/www/uploads&#xa;SSD 256GB&#xa;Photos + Logs" vertex="1">
+          <mxGeometry height="70" width="120" x="1080" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-27" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#FF6F00;fontSize=9;" value="Firewall&#xa;iptables + Fail2ban&#xa;&#xa;Ports:&#xa;80, 443, 1883, 2222&#xa;SSL/TLS" vertex="1">
+          <mxGeometry height="80" width="120" x="1080" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-28" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#616161;fontSize=10;fontStyle=1;" value="&lt;&lt;device node&gt;&gt;&#xa;:switch1 : Switch Ethernet&#xa;24 ports Gigabit&#xa;VLAN capable&#xa;192.168.1.0/24" vertex="1">
+          <mxGeometry height="80" width="200" x="550" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-29" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#B2EBF2;strokeColor=#00ACC1;fontSize=10;fontStyle=1;" value="&lt;&lt;device node&gt;&gt;&#xa;:ap1 : Point d&#39;Accès WiFi&#xa;802.11ac (WiFi 5)&#xa;SSID: CERBERE_LAB&#xa;Sécurité: WPA3" vertex="1">
+          <mxGeometry height="80" width="200" x="950" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-30" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=10;fontStyle=1;align=center;verticalAlign=top;" value="&lt;&lt;device node&gt;&gt;&#xa;:admin_pc : PC&#xa;OS: Windows 10/Linux&#xa;IP: DHCP" vertex="1">
+          <mxGeometry height="140" width="200" x="180" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-31" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF59D;strokeColor=#F9A825;fontSize=9;" value="Navigateur Web&#xa;Chrome / Firefox&#xa;HTTPS Client" vertex="1">
+          <mxGeometry height="60" width="160" x="200" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-32" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=10;fontStyle=1;align=center;verticalAlign=top;" value="&lt;&lt;device node&gt;&gt;&#xa;:mobile : Smartphone&#xa;OS: Android / iOS&#xa;Connexion: WiFi" vertex="1">
+          <mxGeometry height="140" width="200" x="1390" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-33" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;" value="&lt;&lt;artifact&gt;&gt;&#xa;mobile_app&#xa;.apk / .ipa&#xa;React Native&#xa;Push Notifications&#xa;REST API Client" vertex="1">
+          <mxGeometry height="60" width="160" x="1410" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-34" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;fontSize=9;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="9ODFNheKsxCTLkZoRMss-28" value="&amp;lt;&amp;lt;Ethernet&amp;gt;&amp;gt;&#xa;RJ45 Gigabit&#xa;1000Base-T">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="440" />
+              <mxPoint x="500" y="120" />
+            </Array>
+            <mxPoint x="470" y="440" as="sourcePoint" />
+            <mxPoint x="540" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-35" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;fontSize=9;" target="9ODFNheKsxCTLkZoRMss-28" value="&amp;lt;&amp;lt;Ethernet&amp;gt;&amp;gt;&#xa;RJ45 Gigabit&#xa;1000Base-T">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-36" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;fontSize=9;entryX=1.01;entryY=0.863;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.094;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" target="9ODFNheKsxCTLkZoRMss-28" value="&amp;lt;&amp;lt;Ethernet&amp;gt;&amp;gt;&#xa;RJ45 Gigabit&#xa;1000Base-T">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="940" y="180" />
+              <mxPoint x="780" y="180" />
+              <mxPoint x="780" y="149" />
+            </Array>
+            <mxPoint x="910" y="440" as="sourcePoint" />
+            <mxPoint x="690.0476190476188" y="160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-37" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;fontSize=9;" target="9ODFNheKsxCTLkZoRMss-29" value="&amp;lt;&amp;lt;Trunk&amp;gt;&amp;gt;&#xa;Gigabit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-38" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;fontSize=9;" target="9ODFNheKsxCTLkZoRMss-28" value="&amp;lt;&amp;lt;Ethernet&amp;gt;&amp;gt;&#xa;RJ45">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="530" y="90" />
+              <mxPoint x="530" y="90" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-39" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeWidth=2;fontSize=9;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="9ODFNheKsxCTLkZoRMss-29" value="&amp;lt;&amp;lt;WiFi&amp;gt;&amp;gt;&#xa;802.11ac&#xa;5GHz">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1390" y="300" />
+              <mxPoint x="1260" y="300" />
+              <mxPoint x="1260" y="120" />
+              <mxPoint x="1150" y="120" />
+            </Array>
+            <mxPoint x="1320" y="450" as="sourcePoint" />
+            <mxPoint x="1040" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-40" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;fontSize=9;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.005;exitY=0.908;exitDx=0;exitDy=0;exitPerimeter=0;" value="&amp;lt;&amp;lt;GPIO&amp;gt;&amp;gt;&#xa;Relay Control">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="110" y="454" />
+              <mxPoint x="110" y="745" />
+            </Array>
+            <mxPoint x="129.9999999999999" y="455" as="sourcePoint" />
+            <mxPoint x="229.9999999999999" y="745" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-41" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;fontSize=9;" target="9ODFNheKsxCTLkZoRMss-15" value="&amp;lt;&amp;lt;GPIO Pin 17&amp;gt;&amp;gt;&#xa;Digital Input">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="530" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-42" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;fontSize=9;" target="9ODFNheKsxCTLkZoRMss-16" value="&amp;lt;&amp;lt;CSI Interface&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="430" />
+              <mxPoint x="500" y="700" />
+              <mxPoint x="690" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-43" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;fontSize=9;" target="9ODFNheKsxCTLkZoRMss-17" value="&amp;lt;&amp;lt;GPIO Pin 22&amp;gt;&amp;gt;&#xa;Relay Control">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="840" y="510" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-44" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;fontSize=9;" target="9ODFNheKsxCTLkZoRMss-7" value="&amp;lt;&amp;lt;SPI&amp;gt;&amp;gt;&#xa;Pins: 10,11,12,13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-45" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#FF6F00;fontSize=9;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" target="9ODFNheKsxCTLkZoRMss-24" value="&amp;lt;&amp;lt;MQTT&amp;gt;&amp;gt;&#xa;Topic: rfid/scan&#xa;Port: 1883">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="525" />
+              <mxPoint x="480" y="830" />
+              <mxPoint x="1250" y="830" />
+              <mxPoint x="1250" y="420" />
+            </Array>
+            <mxPoint x="480" y="530" as="sourcePoint" />
+            <mxPoint x="1250" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-46" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#FF6F00;fontSize=9;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" target="9ODFNheKsxCTLkZoRMss-24" value="&amp;lt;&amp;lt;MQTT&amp;gt;&amp;gt;&#xa;Topic: presence/detect&#xa;Port: 1883">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="870" y="580" />
+              <mxPoint x="870" y="700" />
+              <mxPoint x="1240" y="700" />
+              <mxPoint x="1240" y="435" />
+            </Array>
+            <mxPoint x="790" y="580.0526315789475" as="sourcePoint" />
+            <mxPoint x="1230" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-48" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#1976D2;fontSize=9;" target="9ODFNheKsxCTLkZoRMss-22" value="&amp;lt;&amp;lt;REST API&amp;gt;&amp;gt;&#xa;HTTPS JSON&#xa;Port: 443">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1490" y="410" />
+              <mxPoint x="1240" y="410" />
+              <mxPoint x="1240" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-49" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#C2185B;fontSize=9;" target="9ODFNheKsxCTLkZoRMss-25" value="&amp;lt;&amp;lt;SQL&amp;gt;&amp;gt;&#xa;SELECT/INSERT/UPDATE">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1080" y="380" />
+              <mxPoint x="870" y="380" />
+              <mxPoint x="870" y="555" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-50" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#C2185B;fontSize=9;" target="9ODFNheKsxCTLkZoRMss-25" value="&amp;lt;&amp;lt;SQL&amp;gt;&amp;gt;&#xa;Auth Queries">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-52" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#388E3C;fontSize=9;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="9ODFNheKsxCTLkZoRMss-26" value="&amp;lt;&amp;lt;Upload&amp;gt;&amp;gt;&#xa;JPEG Photos">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="880" y="430" />
+              <mxPoint x="880" y="730" />
+              <mxPoint x="1290" y="730" />
+              <mxPoint x="1290" y="505" />
+            </Array>
+            <mxPoint x="1260" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-53" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;fontSize=9;align=left;verticalAlign=top;" value="LÉGENDE UML 2.5&#xa;&#xa;&amp;lt;&amp;lt;device node&amp;gt;&amp;gt; : Nœud physique&#xa;&amp;lt;&amp;lt;execution environment&amp;gt;&amp;gt; : OS&#xa;&amp;lt;&amp;lt;artifact&amp;gt;&amp;gt; : Script/App&#xa;component : Composant&#xa;database : Base de données&#xa;─── : Liaison physique&#xa;··· : Dépendance logique&#xa;&#xa;PROTOCOLES:&#xa;• MQTT v3.1.1 (1883)&#xa;• HTTPS (443)&#xa;• SSH (2222)&#xa;• Ethernet 1000Base-T&#xa;• WiFi 802.11ac&#xa;• SPI, CSI, GPIO&#xa;&#xa;SÉCURITÉ:&#xa;✓ TLS 1.3&#xa;✓ JWT Tokens&#xa;✓ AES-256&#xa;✓ WPA3&#xa;✓ Firewall + Fail2ban" vertex="1">
+          <mxGeometry height="340" width="200" x="-310" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="9ODFNheKsxCTLkZoRMss-54" edge="1" parent="1" source="9ODFNheKsxCTLkZoRMss-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="9ODFNheKsxCTLkZoRMss-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
