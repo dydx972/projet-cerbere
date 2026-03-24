@@ -1,0 +1,283 @@
+#!/usr/bin/env python3
+"""
+CERBERE - Lecteur RFID avec connexion BDD
+Inspiré fidèlement de badge.py (PROMAG MF7, UART /dev/ttyS0).
+
+Usage :
+    sudo python3 badge_bdd.py --mode enregistrement
+    sudo python3 badge_bdd.py --mode lecture  (défaut)
+"""
+
+import serial
+import RPi.GPIO as GPIO
+import requests
+import time
+import argparse
+import subprocess
+import json
+
+# ─── CONFIGURATION ────────────────────────────────────────────
+SERVEUR        = "http://192.168.1.120"
+ID_PORTE       = 1
+
+RELAY_PIN      = 22
+DOOR_OPEN_SECS = 5
+ANTI_REBOND    = 2
+NB_LECTURES    = 5   # comme badge.py
+
+# ─── INIT (identique à badge.py) ──────────────────────────────
+subprocess.call(['fuser', '-k', '/dev/ttyS0'], stderr=subprocess.DEVNULL)
+time.sleep(0.5)
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(RELAY_PIN, GPIO.OUT, initial=GPIO.HIGH)
+
+ser = serial.Serial('/dev/ttyS0', 9600, timeout=0)
+ser.flushInput()
+
+# ─── SIMILARITÉ (copié de badge.py) ───────────────────────────
+def similarite(uid1, uid2):
+    commun = sum(1 for a, b in zip(uid1, uid2) if a == b)
+    return commun / max(len(uid1), len(uid2))
+
+# ─── RECONNAISSANCE (adapté de badge.py) ──────────────────────
+def badge_reconnu(data, badges_db):
+    """
+    Adapté de badge.py :
+    - construit uid_brut depuis les octets bruts
+    - compare contre toutes les lectures stockées (lectures_json)
+    - utilise containment + similarité >70%
+    Retourne (uid_badge_en_bdd, id_badge) ou (None, None).
+    """
+    uid_brut = ''.join(f'{b:02X}' for b in data if b != 0)
+    meilleur_score = 0
+    meilleur_uid   = None
+    meilleur_id    = None
+
+    for badge in badges_db:
+        uid_badge = badge["uid_badge"]
+
+        # Lectures disponibles : lectures_json ou fallback sur uid_badge seul
+        if badge.get("lectures_json"):
+            try:
+                lectures = json.loads(badge["lectures_json"])
+            except Exception:
+                lectures = [uid_badge]
+        else:
+            lectures = [uid_badge]
+
+        for lecture in lectures:
+            # Containment (comme badge.py)
+            if lecture in uid_brut or uid_brut in lecture:
+                return uid_badge, badge["id_badge"]
+            # Similarité (comme badge.py)
+            score = similarite(uid_brut, lecture)
+            if score > meilleur_score:
+                meilleur_score = score
+                meilleur_uid   = uid_badge
+                meilleur_id    = badge["id_badge"]
+
+    if meilleur_score > 0.70:
+        return meilleur_uid, meilleur_id
+    return None, None
+
+# ─── CACHE BADGES ─────────────────────────────────────────────
+_badges_cache    = []
+_cache_ts        = 0
+CACHE_DUREE      = 60
+
+def get_badges(force=False):
+    global _badges_cache, _cache_ts
+    if force or time.time() - _cache_ts > CACHE_DUREE:
+        try:
+            r = requests.get(f"{SERVEUR}/api/badges.php", timeout=5)
+            _badges_cache = r.json().get("data", [])
+            _cache_ts = time.time()
+        except Exception as e:
+            print(f"  [WARN] Cache badges non rafraîchi : {e}")
+    return _badges_cache
+
+# ─── OUVRIR LA GÂCHE ──────────────────────────────────────────
+def ouvrir_gache():
+    print("  -> Gâche ouverte.")
+    GPIO.output(RELAY_PIN, GPIO.LOW)
+    time.sleep(DOOR_OPEN_SECS)
+    GPIO.output(RELAY_PIN, GPIO.HIGH)
+    print("  -> Gâche verrouillée.")
+
+# ══════════════════════════════════════════════════════════════
+#  MODE ENREGISTREMENT (adapté de apprentissage() dans badge.py)
+# ══════════════════════════════════════════════════════════════
+def mode_enregistrement():
+    print("=" * 50)
+    print("  MODE ENREGISTREMENT — CERBERE")
+    print(f"  Serveur : {SERVEUR}")
+    print("  Ctrl+C pour quitter.")
+    print("=" * 50)
+
+    while True:
+        # --- Attendre un premier passage ---
+        print("\nApprochez un badge...")
+        while True:
+            if ser.in_waiting > 0:
+                data = ser.read(ser.in_waiting)
+                if data and any(b != 0 for b in data):
+                    break
+            time.sleep(0.05)
+
+        uid_premier = ''.join(f'{b:02X}' for b in data if b != 0)
+        ser.flushInput()
+
+        # Vérifie si déjà en BDD
+        badges = get_badges(force=True)
+        uid_bdd, _ = badge_reconnu(data, badges)
+        if uid_bdd:
+            print(f"  [INFO] Badge déjà enregistré (UID en BDD : {uid_bdd}).")
+            time.sleep(1)
+            continue
+
+        # --- Scan 5 fois comme badge.py ---
+        print(f"\nNouveau badge détecté. Passez-le {NB_LECTURES} fois pour l'enregistrer...")
+        lectures  = [uid_premier]
+        compteur  = 1
+        print(f"  Lecture 1/{NB_LECTURES} : {uid_premier}")
+        time.sleep(1)
+
+        while compteur < NB_LECTURES:
+            if ser.in_waiting > 0:
+                data = ser.read(ser.in_waiting)
+                if data and any(b != 0 for b in data):
+                    uid = ''.join(f'{b:02X}' for b in data if b != 0)
+                    lectures.append(uid)
+                    compteur += 1
+                    print(f"  Lecture {compteur}/{NB_LECTURES} : {uid}")
+                    ser.flushInput()
+                    time.sleep(1)
+            time.sleep(0.05)
+
+        # --- Infos utilisateur ---
+        print("\n  Informations du badge :")
+        type_badge = input("  Type [Mifare_Classic] : ").strip() or "Mifare_Classic"
+
+        try:
+            r = requests.get(f"{SERVEUR}/api/utilisateurs.php", timeout=5)
+            users = r.json().get("data", [])
+            print("\n  Utilisateurs disponibles :")
+            for u in users:
+                print(f"    [{u['id_utilisateur']}] {u['nom']} {u['prenom']}")
+            id_user = input("  ID utilisateur (vide = inconnu) : ").strip()
+            id_user = int(id_user) if id_user.isdigit() else None
+        except Exception:
+            id_user = None
+
+        date_exp = input("  Date d'expiration (YYYY-MM-DD, vide = aucune) : ").strip() or None
+
+        payload = {
+            "uid_badge"       : lectures[0],
+            "lectures_json"   : json.dumps(lectures),
+            "type_badge"      : type_badge,
+            "id_utilisateur"  : id_user,
+            "date_attribution": time.strftime("%Y-%m-%d"),
+            "date_expiration" : date_exp,
+        }
+        try:
+            r = requests.post(f"{SERVEUR}/api/badges.php", json=payload, timeout=5)
+            d = r.json()
+            if d.get("success"):
+                print(f"\n  [OK] Badge enregistré en BDD avec {NB_LECTURES} lectures (id={d['id']}).")
+            else:
+                print(f"\n  [ERREUR] {d.get('error', 'Erreur inconnue')}")
+        except Exception as e:
+            print(f"\n  [ERREUR] {e}")
+
+        print("\n  Approchez un autre badge ou Ctrl+C pour quitter.")
+
+# ══════════════════════════════════════════════════════════════
+#  MODE LECTURE (adapté du mode 2 de badge.py)
+# ══════════════════════════════════════════════════════════════
+def mode_lecture():
+    print("=" * 50)
+    print("  MODE LECTURE — CERBERE")
+    print(f"  Serveur : {SERVEUR}  |  Porte ID : {ID_PORTE}")
+    print("  Approchez un badge.")
+    print("  Ctrl+C pour quitter.")
+    print("=" * 50)
+
+    badges = get_badges(force=True)
+    print(f"  {len(badges)} badge(s) chargé(s) depuis la BDD.")
+
+    dernier_uid     = ""
+    derniere_detect = 0
+
+    try:
+        while True:
+            if ser.in_waiting > 0:
+                data = ser.read(ser.in_waiting)
+                if data and any(b != 0 for b in data):
+                    uid_bdd, _ = badge_reconnu(data, badges)
+                    maintenant  = time.time()
+
+                    if uid_bdd and (uid_bdd != dernier_uid or (maintenant - derniere_detect) > ANTI_REBOND):
+                        dernier_uid     = uid_bdd
+                        derniere_detect = maintenant
+
+                        print(f"\nBadge reconnu.")
+
+                        # Vérification accès via API
+                        try:
+                            r = requests.post(
+                                f"{SERVEUR}/api/badge_check.php",
+                                json={"uid": uid_bdd, "id_porte": ID_PORTE},
+                                timeout=5,
+                            )
+                            d = r.json()
+                        except Exception as e:
+                            print(f"  [ERREUR] Serveur : {e}")
+                            print("  Accès refusé par défaut.")
+                            ser.flushInput()
+                            time.sleep(1)
+                            continue
+
+                        utilisateur = d.get("utilisateur") or "Inconnu"
+                        details     = d.get("details", "")
+
+                        if d.get("autorise"):
+                            print(f"  [ACCÈS ACCORDÉ] {utilisateur}")
+                            print(f"  -> {details}")
+                            ouvrir_gache()
+                        else:
+                            print(f"  [ACCÈS REFUSÉ] {utilisateur}")
+                            print(f"  -> {details}")
+
+                        ser.flushInput()
+                        # Rafraîchit le cache badges toutes les 60s
+                        badges = get_badges()
+
+                    elif not uid_bdd:
+                        print("  Accès refusé — badge inconnu.")
+                        ser.flushInput()
+                        time.sleep(1)
+
+            time.sleep(0.05)
+
+    except KeyboardInterrupt:
+        print("\nArrêt.")
+
+# ─── POINT D'ENTRÉE ───────────────────────────────────────────
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="CERBERE - Contrôle RFID")
+    parser.add_argument("--mode", choices=["enregistrement", "lecture"], default="lecture")
+    args = parser.parse_args()
+
+    try:
+        if args.mode == "enregistrement":
+            mode_enregistrement()
+        else:
+            mode_lecture()
+    except KeyboardInterrupt:
+        print("\nArrêt.")
+    finally:
+        ser.close()
+        GPIO.output(RELAY_PIN, GPIO.HIGH)
+        GPIO.cleanup()

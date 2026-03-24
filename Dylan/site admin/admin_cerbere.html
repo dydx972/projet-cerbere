@@ -431,17 +431,14 @@
 
     <div class="nav-section-label">TABLEAU DE BORD</div>
     <div class="nav-item active" onclick="showPage('dashboard', this)"><span class="icon">◈</span>Vue d'ensemble</div>
-    <div class="nav-item" onclick="showPage('doors', this)"><span class="icon">⬡</span>Portes<span class="nav-badge ok" id="badge-doors">2</span></div>
     <div class="nav-item" onclick="showPage('alerts', this)"><span class="icon">⚠</span>Alertes<span class="nav-badge" id="badge-alerts">3</span></div>
 
-    <div class="nav-section-label">GESTION</div>
+    <div class="nav-section-label">CONTROLE</div>
+    <div class="nav-item" onclick="showPage('door-control', this)"><span class="icon">⊕</span>Ouverture Porte</div>
     <div class="nav-item" onclick="showPage('users', this)"><span class="icon">◎</span>Utilisateurs</div>
-    <div class="nav-item" onclick="showPage('badges', this)"><span class="icon">◈</span>Badges RFID</div>
-    <div class="nav-item" onclick="showPage('access', this)"><span class="icon">▦</span>Autorisations</div>
 
     <div class="nav-section-label">SUPERVISION</div>
     <div class="nav-item" onclick="showPage('logs', this)"><span class="icon">≡</span>Journaux d'accès</div>
-    <div class="nav-item" onclick="showPage('sensors', this)"><span class="icon">◎</span>Capteurs PIR</div>
     <div class="nav-item" onclick="showPage('cameras', this)"><span class="icon">◈</span>Caméras</div>
 
     <div class="nav-section-label">SYSTÈME</div>
@@ -759,47 +756,30 @@
       </div>
 
       <!-- ========== BADGES RFID ========== -->
-      <div id="page-badges" class="page">
-        <div class="toolbar">
-          <input class="search-input" placeholder="Rechercher un badge (UID, nom)..." oninput="filterTable('badges-table', this.value)">
-          <select class="filter-select">
-            <option>Tous</option>
-            <option>Actifs</option>
-            <option>Expirés</option>
-            <option>Perdus/Volés</option>
-          </select>
-          <button class="btn btn-primary btn-sm" onclick="openModal('modal-add-badge')">+ Enregistrer badge</button>
-        </div>
-        <div class="panel">
-          <div class="panel-header"><div class="panel-title">◈ Badges RFID</div><span style="font-family:var(--mono);font-size:10px;color:var(--text-dim)">31 badges · 28 actifs</span></div>
-          <table class="data-table" id="badges-table">
-            <thead><tr>
-              <th>UID BADGE</th><th>TYPE</th><th>UTILISATEUR</th><th>ATTRIBUTION</th><th>EXPIRATION</th><th>STATUT</th><th>ACTIONS</th>
-            </tr></thead>
-            <tbody id="badges-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ========== ACCESS RIGHTS ========== -->
-      <div id="page-access" class="page">
-        <div class="toolbar">
-          <input class="search-input" placeholder="Rechercher...">
-          <select class="filter-select">
-            <option>Toutes les portes</option>
-            <option>Porte W13</option>
-            <option>Porte Laboratoire</option>
-          </select>
-          <button class="btn btn-primary btn-sm" onclick="openModal('modal-add-access')">+ Ajouter autorisation</button>
-        </div>
-        <div class="panel">
-          <div class="panel-header"><div class="panel-title">▦ Autorisations d'Accès</div></div>
-          <table class="data-table" id="access-table">
-            <thead><tr>
-              <th>UTILISATEUR</th><th>PORTE</th><th>JOURS</th><th>HORAIRES</th><th>VALIDITÉ</th><th>STATUT</th><th>ACTIONS</th>
-            </tr></thead>
-            <tbody id="access-tbody"></tbody>
-          </table>
+      <!-- ========== DOOR CONTROL ========== -->
+      <div id="page-door-control" class="page">
+        <div style="max-width:500px;margin:0 auto;">
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">⊕ Ouverture de Porte à Distance</div></div>
+            <div class="panel-body" style="text-align:center;padding:30px;">
+              <div style="font-size:64px;margin-bottom:16px;opacity:.8">🚪</div>
+              <div style="font-family:var(--mono);font-size:14px;color:var(--text-sec);margin-bottom:8px;">Porte Salle W13</div>
+              <div style="font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:24px;">192.168.1.49 · Gâche électrique + Ventouse magnétique</div>
+              <div style="margin-bottom:16px;">
+                <label style="font-family:var(--mono);font-size:10px;color:var(--text-dim);display:block;margin-bottom:6px;">DURÉE D'OUVERTURE</label>
+                <select id="door-duree" style="background:var(--bg-deep);color:var(--text);border:1px solid var(--border);padding:8px 16px;font-family:var(--mono);font-size:13px;border-radius:4px;">
+                  <option value="5">5 secondes</option>
+                  <option value="10">10 secondes</option>
+                  <option value="15">15 secondes</option>
+                  <option value="30">30 secondes</option>
+                </select>
+              </div>
+              <button id="btn-open-door" class="btn btn-primary" style="padding:14px 40px;font-size:16px;letter-spacing:2px;" onclick="ouvrirPorte()">
+                ⊕ OUVRIR LA PORTE
+              </button>
+              <div id="door-status" style="margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--text-dim);display:none;"></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -828,65 +808,6 @@
               <th>TIMESTAMP</th><th>PORTE</th><th>UTILISATEUR</th><th>UID BADGE</th><th>ÉVÉNEMENT</th><th>MÉTHODE</th><th>DÉTAILS</th>
             </tr></thead>
             <tbody id="logs-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ========== SENSORS ========== -->
-      <div id="page-sensors" class="page">
-        <div class="pi-grid" style="grid-template-columns:1fr 1fr">
-          <div class="panel">
-            <div class="panel-header"><div class="panel-title">◎ PIR Salle W13 — HC-SR501</div><span class="badge badge-green">ACTIF</span></div>
-            <div class="panel-body">
-              <div class="sensor-bars">
-                <div class="bar-h"><div class="bar-h-label">GPIO PIN</div><div class="bar-h-track"><div class="bar-h-fill" style="width:34%"></div></div><div class="bar-h-val">17</div></div>
-                <div class="bar-h"><div class="bar-h-label">PORTÉE</div><div class="bar-h-track"><div class="bar-h-fill" style="width:50%"></div></div><div class="bar-h-val">5.0 m</div></div>
-                <div class="bar-h"><div class="bar-h-label">ANGLE</div><div class="bar-h-track"><div class="bar-h-fill" style="width:100%"></div></div><div class="bar-h-val">120°</div></div>
-                <div class="bar-h"><div class="bar-h-label">SENSIBILITÉ</div><div class="bar-h-track"><div class="bar-h-fill" style="width:50%"></div></div><div class="bar-h-val">50%</div></div>
-                <div class="bar-h"><div class="bar-h-label">MAINTIEN</div><div class="bar-h-track"><div class="bar-h-fill" style="width:20%"></div></div><div class="bar-h-val">10 s</div></div>
-              </div>
-              <div style="margin-top:16px;padding:10px;background:var(--bg-deep);">
-                <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:1px">DERNIÈRE DÉTECTION</div>
-                <div style="font-family:var(--mono);font-size:13px;color:var(--accent);margin-top:4px">02/03/2026 14:52:18</div>
-              </div>
-              <div style="display:flex;gap:8px;margin-top:12px;">
-                <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('Capteur W13 calibré')">Calibrer</button>
-                <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('Test PIR W13 lancé')">Tester</button>
-              </div>
-            </div>
-          </div>
-          <div class="panel">
-            <div class="panel-header"><div class="panel-title">◎ PIR Laboratoire — HC-SR501</div><span class="badge badge-green">ACTIF</span></div>
-            <div class="panel-body">
-              <div class="sensor-bars">
-                <div class="bar-h"><div class="bar-h-label">GPIO PIN</div><div class="bar-h-track"><div class="bar-h-fill" style="width:36%"></div></div><div class="bar-h-val">18</div></div>
-                <div class="bar-h"><div class="bar-h-label">PORTÉE</div><div class="bar-h-track"><div class="bar-h-fill" style="width:50%"></div></div><div class="bar-h-val">5.0 m</div></div>
-                <div class="bar-h"><div class="bar-h-label">ANGLE</div><div class="bar-h-track"><div class="bar-h-fill" style="width:100%"></div></div><div class="bar-h-val">120°</div></div>
-                <div class="bar-h"><div class="bar-h-label">SENSIBILITÉ</div><div class="bar-h-track"><div class="bar-h-fill" style="width:50%"></div></div><div class="bar-h-val">50%</div></div>
-                <div class="bar-h"><div class="bar-h-label">MAINTIEN</div><div class="bar-h-track"><div class="bar-h-fill" style="width:20%"></div></div><div class="bar-h-val">10 s</div></div>
-              </div>
-              <div style="margin-top:16px;padding:10px;background:var(--bg-deep);">
-                <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:1px">DERNIÈRE DÉTECTION</div>
-                <div style="font-family:var(--mono);font-size:13px;color:var(--accent);margin-top:4px">02/03/2026 14:39:44</div>
-              </div>
-              <div style="display:flex;gap:8px;margin-top:12px;">
-                <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('Capteur Labo calibré')">Calibrer</button>
-                <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('Test PIR Labo lancé')">Tester</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Detections log -->
-        <div class="panel">
-          <div class="panel-header"><div class="panel-title">≡ Dernières Détections PIR</div></div>
-          <table class="data-table">
-            <thead><tr><th>TIMESTAMP</th><th>CAPTEUR</th><th>DURÉE</th><th>ALERTE GÉNÉRÉE</th><th>DÉTAILS</th></tr></thead>
-            <tbody>
-              <tr><td class="td-mono">02/03/2026 14:52:18</td><td>PIR Salle W13</td><td>3 s</td><td><span class="badge badge-gray">Non</span></td><td>Passage normal</td></tr>
-              <tr><td class="td-mono">02/03/2026 14:48:06</td><td>PIR Laboratoire</td><td>45 s</td><td><span class="badge badge-red">Oui</span></td><td>Présence prolongée</td></tr>
-              <tr><td class="td-mono">02/03/2026 14:39:44</td><td>PIR Laboratoire</td><td>8 s</td><td><span class="badge badge-gray">Non</span></td><td>Passage normal</td></tr>
-              <tr><td class="td-mono">02/03/2026 14:21:11</td><td>PIR Salle W13</td><td>5 s</td><td><span class="badge badge-gray">Non</span></td><td>Passage normal</td></tr>
-            </tbody>
           </table>
         </div>
       </div>
@@ -943,61 +864,61 @@
           <div class="pi-card">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
               <div class="dot green"></div>
-              <div class="pi-name">Serveur Central</div>
+              <div class="pi-name">Contrôleur RFID / Gâche / Ventouse</div>
             </div>
-            <div class="pi-ip">192.168.1.10</div>
-            <div class="pi-role">SERVEUR PRINCIPAL · MYSQL · APACHE · API REST</div>
-            <div class="pi-metrics">
-              <div class="pi-metric"><div class="lbl">CPU</div><div class="val" style="color:var(--accent3)">18%</div></div>
-              <div class="pi-metric"><div class="lbl">RAM</div><div class="val">1.2 / 4 GB</div></div>
-              <div class="pi-metric"><div class="lbl">DISQUE</div><div class="val">8.4 / 32 GB</div></div>
-              <div class="pi-metric"><div class="lbl">UPTIME</div><div class="val" style="color:var(--accent3)">14j 6h</div></div>
-              <div class="pi-metric"><div class="lbl">TEMP</div><div class="val">47°C</div></div>
-              <div class="pi-metric"><div class="lbl">PING</div><div class="val" style="color:var(--accent3)">1ms</div></div>
-            </div>
-            <div style="display:flex;gap:6px;margin-top:12px">
-              <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('Ping OK — 1ms')">Ping</button>
-              <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('Services : MySQL ✓ Apache ✓ MQTT ✓')">Services</button>
-            </div>
-          </div>
-          <div class="pi-card">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-              <div class="dot green"></div>
-              <div class="pi-name">Contrôleur Laboratoire</div>
-            </div>
-            <div class="pi-ip">192.168.1.100</div>
-            <div class="pi-role">RPI_LAB_001 · PIR HC-SR501 · CAMÉRA · VENTOUSE</div>
-            <div class="pi-metrics">
-              <div class="pi-metric"><div class="lbl">CPU</div><div class="val" style="color:var(--accent3)">8%</div></div>
-              <div class="pi-metric"><div class="lbl">RAM</div><div class="val">0.6 / 4 GB</div></div>
-              <div class="pi-metric"><div class="lbl">GPIO 18</div><div class="val" style="color:var(--accent3)">PIR OK</div></div>
-              <div class="pi-metric"><div class="lbl">UPTIME</div><div class="val" style="color:var(--accent3)">14j 6h</div></div>
-              <div class="pi-metric"><div class="lbl">TEMP</div><div class="val">43°C</div></div>
-              <div class="pi-metric"><div class="lbl">MQTT</div><div class="val" style="color:var(--accent3)">Connecté</div></div>
-            </div>
-            <div style="display:flex;gap:6px;margin-top:12px">
-              <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('Ping 192.168.1.100 OK — 2ms')">Ping</button>
-              <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('GPIO 18: PIR OK · Caméra OK')">GPIO</button>
-            </div>
-          </div>
-          <div class="pi-card">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-              <div class="dot green"></div>
-              <div class="pi-name">Contrôleur Porte W13</div>
-            </div>
-            <div class="pi-ip">192.168.1.101</div>
-            <div class="pi-role">RPI_W13_001 · RC522 RFID · CAMÉRA · GÂCHE</div>
+            <div class="pi-ip">192.168.1.49</div>
+            <div class="pi-role">LECTEUR RFID · GÂCHE · VENTOUSE</div>
             <div class="pi-metrics">
               <div class="pi-metric"><div class="lbl">CPU</div><div class="val" style="color:var(--accent3)">12%</div></div>
               <div class="pi-metric"><div class="lbl">RAM</div><div class="val">0.7 / 4 GB</div></div>
               <div class="pi-metric"><div class="lbl">RFID</div><div class="val" style="color:var(--accent3)">RC522 OK</div></div>
               <div class="pi-metric"><div class="lbl">UPTIME</div><div class="val" style="color:var(--accent3)">14j 5h</div></div>
               <div class="pi-metric"><div class="lbl">TEMP</div><div class="val">45°C</div></div>
-              <div class="pi-metric"><div class="lbl">MQTT</div><div class="val" style="color:var(--accent3)">Connecté</div></div>
+              <div class="pi-metric"><div class="lbl">SSH</div><div class="val" style="color:var(--accent3)">kyriann@</div></div>
             </div>
             <div style="display:flex;gap:6px;margin-top:12px">
-              <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('Ping 192.168.1.101 OK — 2ms')">Ping</button>
-              <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('RFID RC522 OK · 13.56MHz')">RFID</button>
+              <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('Ping 192.168.1.49 OK — 2ms')">Ping</button>
+              <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('RFID RC522 OK · Gâche OK · Ventouse OK')">Services</button>
+            </div>
+          </div>
+          <div class="pi-card">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <div class="dot green"></div>
+              <div class="pi-name">Capteur de Présence</div>
+            </div>
+            <div class="pi-ip">192.168.1.89</div>
+            <div class="pi-role">CAPTEUR PIR · DÉTECTION DE PRÉSENCE</div>
+            <div class="pi-metrics">
+              <div class="pi-metric"><div class="lbl">CPU</div><div class="val" style="color:var(--accent3)">8%</div></div>
+              <div class="pi-metric"><div class="lbl">RAM</div><div class="val">0.6 / 4 GB</div></div>
+              <div class="pi-metric"><div class="lbl">PIR</div><div class="val" style="color:var(--accent3)">HC-SR501 OK</div></div>
+              <div class="pi-metric"><div class="lbl">UPTIME</div><div class="val" style="color:var(--accent3)">14j 6h</div></div>
+              <div class="pi-metric"><div class="lbl">TEMP</div><div class="val">43°C</div></div>
+              <div class="pi-metric"><div class="lbl">SSH</div><div class="val" style="color:var(--accent3)">cerbere@</div></div>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:12px">
+              <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('Ping 192.168.1.89 OK — 2ms')">Ping</button>
+              <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('PIR HC-SR501 OK · Détection active')">GPIO</button>
+            </div>
+          </div>
+          <div class="pi-card">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <div class="dot green"></div>
+              <div class="pi-name">Serveur / Caméra</div>
+            </div>
+            <div class="pi-ip">192.168.1.120</div>
+            <div class="pi-role">SERVEUR PRINCIPAL · CAMÉRA · MYSQL · APACHE · API REST</div>
+            <div class="pi-metrics">
+              <div class="pi-metric"><div class="lbl">CPU</div><div class="val" style="color:var(--accent3)">18%</div></div>
+              <div class="pi-metric"><div class="lbl">RAM</div><div class="val">1.2 / 4 GB</div></div>
+              <div class="pi-metric"><div class="lbl">DISQUE</div><div class="val">8.4 / 32 GB</div></div>
+              <div class="pi-metric"><div class="lbl">UPTIME</div><div class="val" style="color:var(--accent3)">14j 6h</div></div>
+              <div class="pi-metric"><div class="lbl">TEMP</div><div class="val">47°C</div></div>
+              <div class="pi-metric"><div class="lbl">SSH</div><div class="val" style="color:var(--accent3)">pi@</div></div>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:12px">
+              <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('Ping 192.168.1.120 OK — 1ms')">Ping</button>
+              <button class="btn btn-outline btn-sm" style="flex:1" onclick="toast('Services : MySQL ✓ Apache ✓ Caméra ✓')">Services</button>
             </div>
           </div>
         </div>
@@ -1008,13 +929,13 @@
             <div style="color:var(--text-dim)">Infrastructure réseau en étoile · Switch 24 ports Gigabit · WPA3</div>
             <div style="margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
               <div style="padding:10px;background:var(--bg-deep);border:1px solid var(--border)">
-                <div style="color:var(--accent)">192.168.1.10</div><div style="color:var(--text-dim);font-size:9px;margin-top:4px">MYSQL 3306 · APACHE 443 · MQTT 1883</div>
+                <div style="color:var(--accent)">192.168.1.49</div><div style="color:var(--text-dim);font-size:9px;margin-top:4px">RFID SPI · GÂCHE · VENTOUSE · ssh kyriann@</div>
               </div>
               <div style="padding:10px;background:var(--bg-deep);border:1px solid var(--border)">
-                <div style="color:var(--accent)">192.168.1.100</div><div style="color:var(--text-dim);font-size:9px;margin-top:4px">PIR GPIO18 · CAM 8080 · MQTT client</div>
+                <div style="color:var(--accent)">192.168.1.89</div><div style="color:var(--text-dim);font-size:9px;margin-top:4px">PIR HC-SR501 · DÉTECTION PRÉSENCE · ssh cerbere@</div>
               </div>
               <div style="padding:10px;background:var(--bg-deep);border:1px solid var(--border)">
-                <div style="color:var(--accent)">192.168.1.101</div><div style="color:var(--text-dim);font-size:9px;margin-top:4px">RFID SPI · CAM 8080 · MQTT client</div>
+                <div style="color:var(--accent)">192.168.1.120</div><div style="color:var(--text-dim);font-size:9px;margin-top:4px">MYSQL 3306 · APACHE 443 · CAMÉRA · ssh pi@</div>
               </div>
             </div>
           </div>
@@ -1204,18 +1125,29 @@ const ACCESS_RIGHTS = [
   {user:'MARTIN Sophie', porte:'Porte Laboratoire', jours:'Mer-Ven', debut:'10:00', fin:'17:00', validite_debut:'2026-02-01', validite_fin:'2026-06-30', actif:true},
 ];
 
-const LOGS = [
-  {ts:'02/03/2026 15:01:44', porte:'Porte Salle W13', user:'FRANCIS Dylan', uid:'A1B2C3D4', event:'acces_accorde', methode:'badge_rfid', detail:'Accès normal'},
-  {ts:'02/03/2026 14:58:22', porte:'Porte Laboratoire', user:'RAVION Philippe', uid:'E5F6A7B8', event:'acces_accorde', methode:'badge_rfid', detail:'Accès normal'},
-  {ts:'02/03/2026 14:48:06', porte:'Porte Laboratoire', user:null, uid:'4A3F2E1B', event:'badge_inconnu', methode:'badge_rfid', detail:'UID non enregistré'},
-  {ts:'02/03/2026 14:39:11', porte:'Porte Salle W13', user:'MARTIN Sophie', uid:'5E6F7A8B', event:'acces_accorde', methode:'badge_rfid', detail:'Accès normal'},
-  {ts:'02/03/2026 14:26:03', porte:'Porte Salle W13', user:'DUBOIS Thomas', uid:'1A2B3C4D', event:'acces_refuse', methode:'badge_rfid', detail:'Badge expiré'},
-  {ts:'02/03/2026 14:12:55', porte:'Porte Laboratoire', user:'SYMPHOR Myriam', uid:'C9D0E1F2', event:'acces_accorde', methode:'badge_rfid', detail:'Accès normal'},
-  {ts:'02/03/2026 13:48:30', porte:'Porte Salle W13', user:null, uid:'FF00AA11', event:'badge_inconnu', methode:'badge_rfid', detail:'UID non enregistré'},
-  {ts:'02/03/2026 13:30:10', porte:'Porte Salle W13', user:'ALEXANDRE Clara', uid:'3A4B5C6D', event:'acces_accorde', methode:'badge_rfid', detail:'Accès normal'},
-  {ts:'02/03/2026 12:15:00', porte:'Porte Salle W13', user:'JOSEPH Marc', uid:'7E8F9A0B', event:'hors_horaire', methode:'badge_rfid', detail:'Accès hors plage horaire autorisée'},
-  {ts:'02/03/2026 11:20:44', porte:'Porte Laboratoire', user:'FRANCIS Dylan', uid:'A1B2C3D4', event:'acces_accorde', methode:'application_mobile', detail:'Via app mobile'},
-];
+let LOGS = [];
+
+async function fetchLogs() {
+  try {
+    const r = await fetch('http://192.168.1.120/api/logs.php');
+    const json = await r.json();
+    if (json.success && json.data) {
+      LOGS = json.data.map(l => ({
+        ts: l.timestamp_evenement ? l.timestamp_evenement.replace(/-/g,'/') : '',
+        porte: l.nom_porte || 'Porte inconnue',
+        user: (l.nom && l.prenom) ? l.nom + ' ' + l.prenom : null,
+        uid: l.uid_badge || '—',
+        event: l.type_evenement || 'inconnu',
+        methode: l.methode_acces || 'badge_rfid',
+        detail: l.details_supplementaires || ''
+      }));
+    }
+  } catch(e) {
+    console.error('Erreur chargement logs:', e);
+  }
+  renderLogs();
+  renderTimeline();
+}
 
 const CONFIG = [
   {key:'nom_systeme', val:'CERBÈRE', desc:'Nom du système', type:'string'},
@@ -1261,9 +1193,8 @@ function showPage(id, el) {
     el.classList.add('active');
   }
   const titles = {
-    dashboard:'Vue d\'ensemble', doors:'État des Portes', alerts:'Alertes',
-    users:'Utilisateurs', badges:'Badges RFID', access:'Autorisations d\'Accès',
-    logs:'Journal des Accès', sensors:'Capteurs PIR', cameras:'Caméras',
+    dashboard:'Vue d\'ensemble', alerts:'Alertes', 'door-control':'Ouverture Porte',
+    users:'Utilisateurs', logs:'Journal des Accès', cameras:'Caméras',
     raspberries:'Raspberry Pi', config:'Configuration Système', audit:'Audit Trail'
   };
   document.getElementById('page-title').textContent = titles[id] || id;
@@ -1450,6 +1381,56 @@ function addAccess() {
   toast('Autorisation d\'accès créée');
   closeModal('modal-add-access');
 }
+
+// ===== OUVERTURE PORTE A DISTANCE =====
+async function ouvrirPorte() {
+  const btn = document.getElementById('btn-open-door');
+  const status = document.getElementById('door-status');
+  const duree = document.getElementById('door-duree').value;
+
+  btn.disabled = true;
+  btn.textContent = 'OUVERTURE EN COURS...';
+  btn.style.opacity = '0.6';
+  status.style.display = 'block';
+  status.style.color = 'var(--accent)';
+  status.textContent = 'Envoi de la commande...';
+
+  try {
+    const resp = await fetch('http://192.168.1.120/api/porte_ouvrir.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({duree: parseInt(duree)})
+    });
+    const data = await resp.json();
+    if (data.success) {
+      status.style.color = 'var(--accent3)';
+      status.textContent = 'Porte ouverte pour ' + duree + ' secondes';
+      btn.style.background = 'var(--accent3)';
+      btn.textContent = 'PORTE OUVERTE';
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = '⊕ OUVRIR LA PORTE';
+        btn.style.opacity = '1';
+        btn.style.background = '';
+        status.textContent = 'Porte verrouillée';
+        status.style.color = 'var(--text-dim)';
+      }, parseInt(duree) * 1000);
+    } else {
+      status.style.color = 'var(--danger)';
+      status.textContent = 'Erreur : ' + (data.error || 'Inconnue');
+      btn.disabled = false;
+      btn.textContent = '⊕ OUVRIR LA PORTE';
+      btn.style.opacity = '1';
+    }
+  } catch(e) {
+    status.style.color = 'var(--danger)';
+    status.textContent = 'Erreur de connexion au serveur';
+    btn.disabled = false;
+    btn.textContent = '⊕ OUVRIR LA PORTE';
+    btn.style.opacity = '1';
+  }
+}
+
 function ackAlert(btn) {
   const item = btn.closest('.alert-item');
   item.style.opacity = '0.4';
@@ -1470,10 +1451,7 @@ function filterAlerts() {
 // ===== INIT =====
 function initApp() {
   renderUsers();
-  renderBadges();
-  renderAccess();
-  renderLogs();
-  renderTimeline();
+  fetchLogs();
   renderConfig();
 }
 
