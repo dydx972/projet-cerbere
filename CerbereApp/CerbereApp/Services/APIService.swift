@@ -3,8 +3,11 @@ import Foundation
 class APIService {
     static let shared = APIService()
     let baseURL = "http://192.168.1.120/api"
+    private let session: URLSession
 
-    private init() {}
+    private init() {
+        session = URLSession.shared
+    }
 
     func get<T: Decodable>(_ endpoint: String) async throws -> T {
         guard let url = URL(string: "\(baseURL)/\(endpoint)") else {
@@ -12,7 +15,7 @@ class APIService {
         }
         var request = URLRequest(url: url)
         request.timeoutInterval = 10
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, _) = try await session.data(for: request)
         let decoder = JSONDecoder()
         return try decoder.decode(T.self, from: data)
     }
@@ -26,7 +29,7 @@ class APIService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.timeoutInterval = 10
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, _) = try await session.data(for: request)
         return (try? JSONSerialization.jsonObject(with: data) as? [String: Any]) ?? [:]
     }
 
@@ -41,7 +44,7 @@ class APIService {
         if let body = body {
             request.httpBody = try JSONSerialization.data(withJSONObject: body)
         }
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, _) = try await session.data(for: request)
         return (try? JSONSerialization.jsonObject(with: data) as? [String: Any]) ?? [:]
     }
 
@@ -52,7 +55,7 @@ class APIService {
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
         request.timeoutInterval = 10
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, _) = try await session.data(for: request)
         return (try? JSONSerialization.jsonObject(with: data) as? [String: Any]) ?? [:]
     }
 }
