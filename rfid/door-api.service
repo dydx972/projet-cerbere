@@ -1,0 +1,13 @@
+[Unit]
+Description=CERBERE Door API
+After=network.target
+
+[Service]
+ExecStartPre=/bin/sleep 5
+ExecStart=/usr/bin/python3 /home/kyriann/door_api.py
+User=root
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

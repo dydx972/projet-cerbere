@@ -1,0 +1,13 @@
+[Unit]
+Description=CERBERE Detection PIR
+After=network.target
+
+[Service]
+ExecStartPre=/bin/sleep 5
+ExecStart=/usr/bin/python3 /home/cerbere/detection.py
+User=root
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
