@@ -1,0 +1,580 @@
+================================================================================
+              PROJET CERBERE - SYSTEME DE CONTROLE D'ACCES INTELLIGENT
+              Lycee Joseph Gaillard - Fort-de-France, Martinique
+              BTS CIEL IR - Session 2026
+              Etudiant responsable : Dylan FRANCIS
+================================================================================
+
+
+1. PRESENTATION GENERALE
+================================================================================
+
+CERBERE est un systeme de controle d'acces intelligent deploye au Lycee Joseph
+Gaillard. Il repose sur 3 Raspberry Pi interconnectes en reseau local (WiFi),
+une base de donnees MySQL centralisee, un site web d'administration, une
+application mobile iOS, une application macOS et une application Apple Watch.
+
+Le systeme gere :
+- L'ouverture/fermeture de porte par badge RFID
+- L'ouverture a distance depuis le site web, l'application mobile ou la montre
+- La detection de presence par capteur PIR
+- La surveillance video en direct par camera
+- La journalisation de tous les acces et evenements
+- La gestion des utilisateurs, badges et autorisations
+
+
+2. ARCHITECTURE MATERIELLE
+================================================================================
+
++-----------------------------------------------------------------------+
+|                        RESEAU LOCAL (192.168.1.x)                     |
++-----------------------------------------------------------------------+
+        |                       |                       |
++-------+---------+   +---------+---------+   +---------+---------+
+| RASPBERRY PI 1  |   | RASPBERRY PI 2    |   | RASPBERRY PI 3/5  |
+| Controleur RFID |   | Capteur Presence  |   | Serveur Central   |
+| 192.168.1.49    |   | 192.168.1.89      |   | 192.168.1.120     |
+| SSH: kyriann@   |   | SSH: cerbere@     |   | SSH: pi@          |
+| MDP: pi         |   | MDP: pi           |   | MDP: pi           |
++-----------------+   +-------------------+   +-------------------+
+| - Lecteur RFID  |   | - Capteur PIR     |   | - Apache2         |
+|   (UART)        |   |   (GPIO 17)       |   | - MariaDB         |
+| - Gache elect.  |   | - LED statut      |   | - PHP 8.4         |
+|   (I2C relay)   |   |   (GPIO 18)       |   | - API REST        |
+| - Ventouse      |   |                   |   | - Site admin      |
+|   (I2C relay)   |   |                   |   | - phpMyAdmin      |
+| - API porte     |   |                   |   |                   |
+|   (port 5000)   |   |                   |   |                   |
++-----------------+   +-------------------+   +-------------------+
+
++-------------------+
+| RASPBERRY PI CAM  |
+| Camera IMX219     |
+| 192.168.1.138     |
+| SSH: pi@          |
+| MDP: pi           |
++-------------------+
+| - Stream MJPEG    |
+|   (port 8090)     |
+| - Snapshot API    |
+| - rpicam-vid      |
++-------------------+
+
+
+3. COMMUNICATIONS ENTRE COMPOSANTS
+================================================================================
+
+3.1 Verification d'acces par badge RFID
+------------------------------------------------------------------------
+[Badge RFID] --UART--> [Pi RFID (192.168.1.49)]
+                              |
+                              | HTTP POST /api/badge_check.php
+                              | Corps: {"uid": "XXXX", "id_porte": 1}
+                              v
+                        [Serveur (192.168.1.120)]
+                              |
+                              | Verification en base de donnees :
+                              | - Badge existe et actif ?
+                              | - Badge non perdu / non expire ?
+                              | - Utilisateur actif ?
+                              | - Autorisation pour cette porte ?
+                              | - Jour et horaire autorises ?
+                              |
+                              | Reponse: {"autorise": true/false,
+                              |           "type_evenement": "acces_accorde"}
+                              v
+                        [Pi RFID (192.168.1.49)]
+                              |
+                              | Si autorise : commande I2C
+                              | Bus 1, Adresse 0x20, Registre 0x06
+                              v
+                        [Relais PCA9554]
+                              |
+                              +-- Canal 1 : Gache electrique (ouvre)
+                              +-- Canal 2 : Ventouse magnetique (relache)
+                              |
+                              | Apres X secondes : referme automatiquement
+
+
+3.2 Ouverture a distance (site web / app mobile / Apple Watch)
+------------------------------------------------------------------------
+[Navigateur/App] --HTTP POST--> [Serveur (192.168.1.120)]
+                                    /api/porte_ouvrir.php
+                                    Corps: {"duree": 5}
+                                         |
+                                         | HTTP POST vers Pi RFID
+                                         | http://192.168.1.49:5000/ouvrir
+                                         | Corps: {"secret": "cerbere2026",
+                                         |         "duree": 5}
+                                         v
+                                   [Pi RFID (192.168.1.49)]
+                                         |
+                                         | door_api.py recoit la requete
+                                         | Verifie le secret "cerbere2026"
+                                         | Execute gache.py --ouvrir --duree 5
+                                         v
+                                   [Gache/Ventouse s'ouvre]
+                                         |
+                                   [Serveur enregistre l'evenement
+                                    dans logs_acces avec
+                                    type = "ouverture_distance"]
+
+
+3.3 Detection de presence (capteur PIR)
+------------------------------------------------------------------------
+[Capteur PIR GPIO 17] --signal--> [Pi Presence (192.168.1.89)]
+                                        |
+                                        | detection.py detecte le mouvement
+                                        | Mesure la duree de detection
+                                        | Allume LED GPIO 18
+                                        |
+                                        | HTTP POST /api/detections.php
+                                        | Corps: {"id_capteur": 1,
+                                        |         "duree_detection_secondes": 45,
+                                        |         "alerte_generee": true,
+                                        |         "details": "Presence 45s"}
+                                        v
+                                  [Serveur (192.168.1.120)]
+                                        |
+                                        | Enregistre la detection
+                                        | Si duree > 30s : genere une alerte
+                                        | Capture automatique camera
+                                        | (GET http://192.168.1.138:8090/snapshot)
+
+
+3.4 Flux camera en direct
+------------------------------------------------------------------------
+[Camera IMX219] --CSI--> [Pi Camera (192.168.1.138)]
+                               |
+                               | camera_stream.py
+                               | rpicam-vid --codec mjpeg --framerate 15
+                               | Rotation 180 degres (Pillow)
+                               | Serveur HTTP port 8090
+                               |
+                               +-- /stream   -> flux MJPEG continu
+                               +-- /snapshot  -> image JPEG unique
+                               |
+                               v
+                         [Site web / App iOS / App macOS]
+                         Affichage en direct
+
+
+4. BASE DE DONNEES
+================================================================================
+
+Serveur : MariaDB sur 192.168.1.120
+Base    : cerbere_db
+User    : root / pi
+
+4.1 Tables principales
+------------------------------------------------------------------------
+
+ROLES (6 roles par defaut)
++----------+----------------------------+
+| id_role  | nom_role                   |
++----------+----------------------------+
+| 1        | Etudiant BTS               |
+| 2        | Enseignant                 |
+| 3        | Personnel Administratif    |
+| 4        | Visiteur                   |
+| 5        | Technicien                 |
+| 6        | Administrateur Systeme     |
++----------+----------------------------+
+
+UTILISATEURS
+- id_utilisateur, nom, prenom, email, telephone
+- etablissement (defaut: Lycee Joseph Gaillard)
+- statut: etudiant / enseignant / professionnel / visiteur
+- id_role (reference roles)
+- actif (booleen)
+
+BADGES_RFID
+- id_badge, uid_badge (identifiant unique du badge)
+- id_utilisateur (proprietaire)
+- type_badge: mifare_classic / mifare_ultralight / ntag213
+- date_expiration, actif, perdu
+
+PORTES (2 portes configurees)
+- id_porte, nom_porte, localisation
+- type_serrure: gache_electrique / ventouse_magnetique
+- raspberry_pi_id (hostname du Pi controleur)
+- etat_actuel: verrouille / deverrouille
+
+AUTORISATIONS_ACCES
+- id_utilisateur + id_porte (qui a acces a quelle porte)
+- heure_debut, heure_fin (plage horaire)
+- jours_semaine: lundi,mardi,mercredi,...
+- date_debut_validite, date_fin_validite
+- actif
+
+CAPTEURS_PRESENCE
+- id_capteur, nom_capteur, type_capteur (PIR)
+- id_porte (associe a une porte)
+- gpio_pin, portee_metres, angle_detection
+
+CAMERAS
+- id_camera, nom_camera, id_porte
+- resolution, fps, format_flux (MJPEG)
+- url_flux, actif
+
+4.2 Tables de journalisation
+------------------------------------------------------------------------
+
+LOGS_ACCES
+- id_log, id_porte, id_utilisateur, uid_badge
+- type_evenement: acces_accorde / acces_refuse / badge_inconnu /
+                  badge_expire / hors_horaire / ouverture_distance
+- methode_acces: badge_rfid / code_pin / biometrique / distance
+- details_supplementaires, timestamp_evenement
+
+LOGS_DETECTIONS
+- id_detection, id_capteur
+- jour_detection, heure_detection
+- duree_detection_secondes
+- alerte_generee (booleen)
+- capture_url, capture_taille_ko
+
+ALERTES
+- id_alerte, type_alerte, niveau_gravite
+  (critical / error / warning / info)
+- id_porte, id_capteur, message
+- acquittee (booleen)
+- timestamp_alerte, timestamp_acquittement
+
+LOGS_MODIFICATIONS (audit trail)
+- id_modification, table_modifiee
+- id_enregistrement, type_operation (INSERT/UPDATE/DELETE)
+- anciennes_valeurs, nouvelles_valeurs
+
+4.3 Tables d'administration
+------------------------------------------------------------------------
+
+ADMINISTRATEURS
+- username, password_hash (bcrypt)
+- id_utilisateur, niveau_acces (admin / super_admin / operateur)
+- derniere_connexion
+
+SESSIONS_ADMIN
+- token_session (SHA-256)
+- id_admin, date_expiration
+
+CONFIGURATIONS_SYSTEME
+- cle_config / valeur_config / description_config
+  Exemples:
+  - duree_ouverture_defaut: 5 (secondes)
+  - duree_session_admin: 3600 (secondes)
+  - tentatives_max_connexion: 5
+  - duree_blocage_badge: 300 (secondes)
+  - retention_logs_jours: 90
+  - email_alertes_actif: true
+  - adresse_email_alertes: admin@josephgaillard.fr
+
+4.4 Vues SQL
+------------------------------------------------------------------------
+- vue_acces_recents : derniers acces avec infos utilisateur
+- vue_alertes_actives : alertes non acquittees
+- vue_stats_utilisateurs : statistiques d'acces par utilisateur
+- vue_etat_systeme : etat global (nb portes, capteurs, cameras, users)
+
+
+5. API REST (Serveur 192.168.1.120)
+================================================================================
+
+Toutes les API sont en PHP, situees dans /var/www/html/api/
+Elles retournent du JSON avec la structure :
+{"success": true/false, "data": [...], "error": "message"}
+
+5.1 Endpoints
+------------------------------------------------------------------------
+
+GET  /api/logs.php              Historique des acces
+GET  /api/utilisateurs.php      Liste des utilisateurs
+POST /api/utilisateurs.php      Ajouter un utilisateur
+GET  /api/alertes.php           Liste des alertes
+PUT  /api/alertes.php?id=X      Acquitter une alerte
+GET  /api/detections.php        Historique des detections PIR
+POST /api/detections.php        Enregistrer une detection
+GET  /api/acces.php             Liste des autorisations
+GET  /api/badges.php            Liste des badges RFID
+POST /api/badge_check.php       Verifier un badge (utilise par Pi RFID)
+POST /api/porte_ouvrir.php      Ouvrir la porte a distance
+GET  /api/cameras.php           Info cameras
+GET  /api/config.php            Configuration systeme
+GET  /api/audit.php             Journal d'audit
+POST /api/auth.php              Authentification admin
+
+5.2 API de la porte (Pi RFID 192.168.1.49:5000)
+------------------------------------------------------------------------
+
+POST /ouvrir
+  Headers: Content-Type: application/json
+  Corps: {"secret": "cerbere2026", "duree": 5}
+  Reponse: {"success": true, "message": "Porte ouverte pour 5 secondes"}
+
+GET /status
+  Reponse: {"status": "running", "hostname": "..."}
+
+
+6. SCRIPTS PYTHON
+================================================================================
+
+6.1 badge_bdd.py (Pi RFID - 192.168.1.49)
+------------------------------------------------------------------------
+- Lecture badges RFID via port serie /dev/ttyS0 (9600 bauds)
+- Mode enregistrement : 5 lectures pour valider un badge
+- Mode lecture : verification avec similarite > 85%
+- Anti-rebond : delai de 2 secondes entre lectures
+- Cache badges : 60 secondes pour eviter les requetes repetees
+- Appel API badge_check.php pour verification
+- Ouverture porte via gache.py si autorise
+
+6.2 door_api.py (Pi RFID - 192.168.1.49)
+------------------------------------------------------------------------
+- Serveur HTTP sur port 5000
+- Endpoint POST /ouvrir avec authentification par secret
+- Execute gache.py en sous-processus
+- Endpoint GET /status pour monitoring
+
+6.3 gache.py (Pi RFID - 192.168.1.49)
+------------------------------------------------------------------------
+- Controle relais I2C via PCA9554
+- Bus I2C : 1
+- Adresse peripherique : 0x20
+- Registre de sortie : 0x06
+- Canal 1 (bit 0) : gache electrique
+- Canal 2 (bit 1) : ventouse magnetique
+- Options : --ouvrir, --fermer, --duree N
+
+6.4 detection.py (Pi Presence - 192.168.1.89)
+------------------------------------------------------------------------
+- Capteur PIR sur GPIO 17
+- LED de statut sur GPIO 18
+- Mesure la duree de chaque detection
+- Seuil d'alerte : 30 secondes
+- Envoi des detections au serveur via API
+- Capture camera automatique lors d'une alerte
+
+6.5 camera_stream.py (Pi Camera - 192.168.1.138)
+------------------------------------------------------------------------
+- Capture via rpicam-vid (codec MJPEG, 640x480, 15fps)
+- Rotation 180 degres via Pillow (camera montee a l'envers)
+- Serveur HTTP sur port 8090
+- /stream : flux MJPEG continu (multipart/x-mixed-replace)
+- /snapshot : capture JPEG unique
+- Headers CORS pour acces cross-origin
+
+
+7. SERVICES SYSTEMD (demarrage automatique)
+================================================================================
+
+7.1 Pi RFID (192.168.1.49)
+------------------------------------------------------------------------
+rfid.service :
+  ExecStartPre=/bin/sleep 5
+  ExecStart=/usr/bin/python3 /home/kyriann/badge_bdd.py
+  User=root
+  Restart=on-failure, RestartSec=10
+
+door-api.service :
+  ExecStartPre=/bin/sleep 5
+  ExecStart=/usr/bin/python3 /home/kyriann/door_api.py
+  User=root
+  Restart=on-failure, RestartSec=10
+
+7.2 Pi Presence (192.168.1.89)
+------------------------------------------------------------------------
+pir-detection.service :
+  ExecStartPre=/bin/sleep 5
+  ExecStart=/usr/bin/python3 /home/cerbere/detection.py
+  User=root
+  Restart=on-failure, RestartSec=10
+
+7.3 Pi Serveur (192.168.1.120)
+------------------------------------------------------------------------
+- apache2.service (serveur web)
+- mariadb.service (base de donnees)
+- camera-stream.service (flux camera, si camera locale)
+
+7.4 Pi Camera (192.168.1.138)
+------------------------------------------------------------------------
+camera-stream.service :
+  ExecStartPre=/bin/sleep 5
+  ExecStart=/usr/bin/python3 /usr/local/bin/camera_stream.py
+  User=root
+  Restart=on-failure, RestartSec=10
+
+
+8. SITE WEB D'ADMINISTRATION
+================================================================================
+
+URL : http://192.168.1.120/admin_cerbere.html
+Identifiants : admin / admin123
+
+Fichier unique HTML avec CSS et JavaScript integres (81 Ko)
+Theme sombre style GitHub
+
+Pages disponibles :
+- Dashboard : KPIs, camera en direct, timeline des acces, stats semaine
+- Journal d'acces : historique avec filtres par type d'evenement
+- Alertes : liste avec niveaux de gravite, bouton acquitter
+- Utilisateurs : liste, ajout, detail
+- Controle porte : ouverture a distance avec selection de duree
+- Cameras : flux video en direct
+- Raspberry Pi : etat des 3 Pi avec IP et roles
+- Configuration : parametres systeme
+- Audit : journal des modifications
+
+Le flux camera est affiche via une balise <img> pointant vers
+http://192.168.1.138:8090/stream avec un style CSS
+transform:rotate(180deg) pour corriger l'orientation.
+
+
+9. APPLICATION MOBILE iOS
+================================================================================
+
+Projet : /CerbereApp/CerbereApp.xcodeproj
+Langage : Swift / SwiftUI
+Cible : iOS 16+
+
+Structure :
+  CerbereApp/
+  +-- CerbereAppApp.swift          Point d'entree
+  +-- Models/
+  |   +-- Models.swift             Structures de donnees (tous les champs en String)
+  +-- Services/
+  |   +-- APIService.swift         Client HTTP (GET/POST/PUT/DELETE)
+  |   +-- NFCService.swift         Lecture tags NFC (CoreNFC)
+  +-- Views/
+  |   +-- LoginView.swift          Ecran de connexion
+  |   +-- MainTabView.swift        Navigation par onglets (6 tabs)
+  |   +-- DashboardView.swift      Tableau de bord + camera live
+  |   +-- DoorControlView.swift    Ouverture porte + NFC
+  |   +-- LogsView.swift           Journal des acces avec filtres
+  |   +-- AlertesView.swift        Gestion des alertes
+  |   +-- UtilisateursView.swift   Gestion utilisateurs
+  |   +-- SettingsView.swift       Detections, camera, config, audit
+  +-- Info.plist                   ATS desactive + NFC usage
+  +-- CerbereApp.entitlements      NFC reader session
+
+Connexion API : http://192.168.1.120/api
+Camera snapshot : http://192.168.1.138:8090/snapshot (refresh 0.3s)
+
+Fonctionnalites specifiques mobile :
+- Ouverture de porte par NFC (approcher iPhone du lecteur)
+- Choix de duree d'ouverture (5/10/15/30 secondes)
+- Visualisation camera en quasi temps reel
+- Gestion complete des utilisateurs (ajout/consultation)
+
+Note technique : MySQL/PHP retourne les nombres comme des strings JSON.
+Tous les modeles Swift utilisent String pour les champs numeriques.
+
+
+10. APPLICATION macOS
+================================================================================
+
+Projet : /CerbereMac/CerbereMac.xcodeproj
+Langage : Swift / SwiftUI
+Cible : macOS 14+
+
+Structure identique a l'app iOS avec les adaptations suivantes :
+- Navigation par sidebar (NavigationSplitView) au lieu des tabs
+- NSImage au lieu de UIImage pour le flux camera
+- Pas de NFC (non supporte sur Mac)
+- Fenetre 1100x700 avec titre masque
+- Entitlements : sandbox + network client
+
+Sections sidebar :
+  Principal    : Dashboard, Porte, Journaux, Alertes, Utilisateurs
+  Supervision  : Detections PIR, Camera, Raspberry Pi
+  Gestion      : Autorisations, Configuration, Audit Trail
+
+
+11. APPLICATION APPLE WATCH
+================================================================================
+
+Projet : /CerbereWatch/CerbereWatch.xcodeproj
+Langage : Swift / SwiftUI
+Cible : watchOS
+
+Application minimale avec un bouton pour ouvrir la porte a distance.
+Envoie un POST vers http://192.168.1.120/api/porte_ouvrir.php
+
+
+12. SECURITE
+================================================================================
+
+Authentification :
+- Site web / Apps : admin / admin123
+- Mots de passe admin stockes en bcrypt dans la base
+- Sessions avec tokens SHA-256 et expiration
+
+Reseau :
+- Toutes les communications en HTTP (pas de HTTPS)
+- API de la porte protegee par secret partage "cerbere2026"
+- Tous les Pi accessibles en SSH avec mot de passe "pi"
+
+Base de donnees :
+- Connexion root avec mot de passe "pi"
+- Contraintes de cles etrangeres actives
+- Audit trail automatique des modifications
+
+Controle d'acces :
+- Verification multi-criteres (badge actif, non perdu, non expire,
+  utilisateur actif, autorisation porte, jour, horaire)
+- Anti-rebond sur lecture badge (2 secondes)
+- Blocage apres tentatives echouees (configurable)
+
+
+13. DEPLOIEMENT
+================================================================================
+
+Les fichiers sont deployes sur les Pi via SSH/SCP :
+
+  Mac (local) --> SCP vers /tmp sur le Pi --> sudo cp vers destination finale
+
+Permissions des fichiers web :
+  chmod 644 fichiers
+  chown www-data:www-data /var/www/html/*
+
+Activation des services :
+  sudo systemctl enable nom-du-service
+  sudo systemctl start nom-du-service
+
+Les 3 Raspberry Pi demarrent automatiquement tous les services
+au boot grace aux fichiers .service dans /etc/systemd/system/
+
+Adresses IP statiques configurees via NetworkManager (nmcli).
+
+
+14. FICHIERS DU PROJET
+================================================================================
+
+Serveur (19 fichiers) :
+  admin_cerbere.html, index.html
+  camera_stream.py, camera-stream.service
+  pir_detection.py, pir_sensor.py, temperature.py
+  api/ : db.php, auth.php, logs.php, utilisateurs.php, badges.php,
+         badge_check.php, porte_ouvrir.php, alertes.php, detections.php,
+         cameras.php, acces.php, config.php, audit.php
+
+RFID (10 fichiers) :
+  badge_bdd.py, badge.py, badge_bdd2.py, ajouter_badge.py
+  door_api.py, gache.py, debug_rfid.py, test.py
+  rfid.service, door-api.service
+
+Presence (2 fichiers) :
+  detection.py, pir-detection.service
+
+Base de donnees :
+  Dylan/cerbere.sql (846 lignes - schema complet)
+
+Applications :
+  CerbereApp/ (projet iOS - 12 fichiers Swift)
+  CerbereMac/ (projet macOS - 10 fichiers Swift)
+  CerbereWatch/ (projet watchOS - 2 fichiers Swift)
+
+
+================================================================================
+                         FIN DU COMPTE RENDU
+                      Projet CERBERE - Mars 2026
+================================================================================
