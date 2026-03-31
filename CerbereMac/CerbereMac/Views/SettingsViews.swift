@@ -1,54 +1,5 @@
 import SwiftUI
 
-struct SettingsView: View {
-    var onLogout: () -> Void
-
-    var body: some View {
-        NavigationView {
-            List {
-                Section("Supervision") {
-                    NavigationLink(destination: DetectionsView()) {
-                        Label("Detections PIR", systemImage: "sensor")
-                    }
-                    NavigationLink(destination: CameraFullView()) {
-                        Label("Camera", systemImage: "video")
-                    }
-                    NavigationLink(destination: RaspberryPiView()) {
-                        Label("Raspberry Pi", systemImage: "cpu")
-                    }
-                }
-
-                Section("Gestion") {
-                    NavigationLink(destination: AutorisationsView()) {
-                        Label("Autorisations", systemImage: "lock.shield")
-                    }
-                    NavigationLink(destination: ConfigView()) {
-                        Label("Configuration", systemImage: "gearshape.2")
-                    }
-                    NavigationLink(destination: AuditView()) {
-                        Label("Audit Trail", systemImage: "doc.text.magnifyingglass")
-                    }
-                }
-
-                Section {
-                    Button(action: onLogout) {
-                        HStack {
-                            Image(systemName: "rectangle.portrait.and.arrow.right")
-                                .foregroundColor(Color(hex: "f85149"))
-                            Text("Deconnexion")
-                                .foregroundColor(Color(hex: "f85149"))
-                        }
-                    }
-                }
-            }
-            .scrollContentBackground(.hidden)
-            .background(Color(hex: "0d1117"))
-            .navigationTitle("Systeme")
-            .navigationBarTitleDisplayMode(.inline)
-        }
-    }
-}
-
 // MARK: - Detections PIR
 struct DetectionsView: View {
     @State private var detections: [Detection] = []
@@ -107,9 +58,6 @@ struct DetectionsView: View {
             }
         }
         .background(Color(hex: "0d1117"))
-        .navigationTitle("Detections PIR")
-        .navigationBarTitleDisplayMode(.inline)
-        .refreshable { await loadDetections() }
         .task { await loadDetections() }
     }
 
@@ -143,10 +91,10 @@ struct CameraFullView: View {
                         .cornerRadius(4)
                 }
                 CameraStreamView()
-                    .frame(height: 250)
+                    .frame(height: 400)
                     .cornerRadius(8)
                 HStack {
-                    Text("1280x720 - 25fps - MJPEG")
+                    Text("640x480 - 15fps - MJPEG")
                         .font(.system(size: 10, design: .monospaced))
                         .foregroundColor(Color(hex: "484f58"))
                     Spacer()
@@ -163,8 +111,6 @@ struct CameraFullView: View {
             Spacer()
         }
         .background(Color(hex: "0d1117"))
-        .navigationTitle("Camera")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -210,8 +156,6 @@ struct RaspberryPiView: View {
             .padding(.vertical, 8)
         }
         .background(Color(hex: "0d1117"))
-        .navigationTitle("Raspberry Pi")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -256,9 +200,6 @@ struct AutorisationsView: View {
             }
         }
         .background(Color(hex: "0d1117"))
-        .navigationTitle("Autorisations")
-        .navigationBarTitleDisplayMode(.inline)
-        .refreshable { await loadData() }
         .task { await loadData() }
     }
 
@@ -304,8 +245,6 @@ struct ConfigView: View {
             }
         }
         .background(Color(hex: "0d1117"))
-        .navigationTitle("Configuration")
-        .navigationBarTitleDisplayMode(.inline)
         .task { await loadConfig() }
     }
 
@@ -363,8 +302,6 @@ struct AuditView: View {
             }
         }
         .background(Color(hex: "0d1117"))
-        .navigationTitle("Audit Trail")
-        .navigationBarTitleDisplayMode(.inline)
         .task { await loadAudit() }
     }
 

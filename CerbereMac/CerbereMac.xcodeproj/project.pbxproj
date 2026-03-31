@@ -1,0 +1,322 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000010000000000000001 /* CerbereMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001; };
+		A10000020000000000000002 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000020000000000000002; };
+		A10000030000000000000003 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000030000000000000003; };
+		A10000040000000000000004 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000040000000000000004; };
+		A10000050000000000000005 /* MainSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000050000000000000005; };
+		A10000060000000000000006 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000060000000000000006; };
+		A10000070000000000000007 /* DoorControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000070000000000000007; };
+		A10000080000000000000008 /* LogsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000080000000000000008; };
+		A10000090000000000000009 /* AlertesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000090000000000000009; };
+		A10000100000000000000010 /* UtilisateursView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000100000000000000010; };
+		A10000110000000000000011 /* SettingsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000110000000000000011; };
+		A10000120000000000000012 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000120000000000000012; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A20000010000000000000001 /* CerbereMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CerbereMacApp.swift; sourceTree = "<group>"; };
+		A20000020000000000000002 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		A20000030000000000000003 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		A20000040000000000000004 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		A20000050000000000000005 /* MainSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSidebarView.swift; sourceTree = "<group>"; };
+		A20000060000000000000006 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		A20000070000000000000007 /* DoorControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoorControlView.swift; sourceTree = "<group>"; };
+		A20000080000000000000008 /* LogsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsView.swift; sourceTree = "<group>"; };
+		A20000090000000000000009 /* AlertesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertesView.swift; sourceTree = "<group>"; };
+		A20000100000000000000010 /* UtilisateursView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilisateursView.swift; sourceTree = "<group>"; };
+		A20000110000000000000011 /* SettingsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViews.swift; sourceTree = "<group>"; };
+		A20000120000000000000012 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A20000130000000000000013 /* CerbereMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CerbereMac.entitlements; sourceTree = "<group>"; };
+		A30000010000000000000001 /* CerbereMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CerbereMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A40000010000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A50000010000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A50000020000000000000002 /* CerbereMac */,
+				A50000060000000000000006 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A50000020000000000000002 /* CerbereMac */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000001 /* CerbereMacApp.swift */,
+				A50000030000000000000003 /* Models */,
+				A50000040000000000000004 /* Services */,
+				A50000050000000000000005 /* Views */,
+				A20000120000000000000012 /* Assets.xcassets */,
+				A20000130000000000000013 /* CerbereMac.entitlements */,
+			);
+			path = CerbereMac;
+			sourceTree = "<group>";
+		};
+		A50000030000000000000003 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A20000020000000000000002 /* Models.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A50000040000000000000004 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A20000030000000000000003 /* APIService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A50000050000000000000005 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A20000040000000000000004 /* LoginView.swift */,
+				A20000050000000000000005 /* MainSidebarView.swift */,
+				A20000060000000000000006 /* DashboardView.swift */,
+				A20000070000000000000007 /* DoorControlView.swift */,
+				A20000080000000000000008 /* LogsView.swift */,
+				A20000090000000000000009 /* AlertesView.swift */,
+				A20000100000000000000010 /* UtilisateursView.swift */,
+				A20000110000000000000011 /* SettingsViews.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A50000060000000000000006 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A30000010000000000000001 /* CerbereMac.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A60000010000000000000001 /* CerbereMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A80000010000000000000001 /* Build configuration list for PBXNativeTarget "CerbereMac" */;
+			buildPhases = (
+				A70000010000000000000001 /* Sources */,
+				A40000010000000000000001 /* Frameworks */,
+				A70000020000000000000002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CerbereMac;
+			productName = CerbereMac;
+			productReference = A30000010000000000000001 /* CerbereMac.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A90000010000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					A60000010000000000000001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = A80000020000000000000002 /* Build configuration list for PBXProject "CerbereMac" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = fr;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				fr,
+				Base,
+			);
+			mainGroup = A50000010000000000000001;
+			productRefGroup = A50000060000000000000006 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A60000010000000000000001 /* CerbereMac */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A70000020000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000120000000000000012 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A70000010000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000010000000000000001 /* CerbereMacApp.swift in Sources */,
+				A10000020000000000000002 /* Models.swift in Sources */,
+				A10000030000000000000003 /* APIService.swift in Sources */,
+				A10000040000000000000004 /* LoginView.swift in Sources */,
+				A10000050000000000000005 /* MainSidebarView.swift in Sources */,
+				A10000060000000000000006 /* DashboardView.swift in Sources */,
+				A10000070000000000000007 /* DoorControlView.swift in Sources */,
+				A10000080000000000000008 /* LogsView.swift in Sources */,
+				A10000090000000000000009 /* AlertesView.swift in Sources */,
+				A10000100000000000000010 /* UtilisateursView.swift in Sources */,
+				A10000110000000000000011 /* SettingsViews.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		B10000010000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B10000020000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		B20000010000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CerbereMac/CerbereMac.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2026 Lycee Joseph Gaillard";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cerbere.mac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B20000020000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CerbereMac/CerbereMac.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright 2026 Lycee Joseph Gaillard";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cerbere.mac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A80000010000000000000001 /* Build configuration list for PBXNativeTarget "CerbereMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B20000010000000000000001 /* Debug */,
+				B20000020000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A80000020000000000000002 /* Build configuration list for PBXProject "CerbereMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B10000010000000000000001 /* Debug */,
+				B10000020000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = A90000010000000000000001 /* Project object */;
+}

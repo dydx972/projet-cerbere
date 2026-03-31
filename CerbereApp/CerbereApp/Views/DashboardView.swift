@@ -125,26 +125,47 @@ struct KPICard: View {
 }
 
 struct CameraStreamView: View {
+    @State private var uiImage: UIImage?
+    @State private var isLoading = true
+    private let timer = Timer.publish(every: 0.3, on: .main, in: .common).autoconnect()
+
     var body: some View {
         ZStack {
             Color.black
-            AsyncImage(url: URL(string: "http://192.168.1.120:8090/snapshot")) { phase in
-                switch phase {
-                case .success(let image):
-                    image.resizable().aspectRatio(contentMode: .fill)
-                case .failure:
-                    VStack(spacing: 8) {
-                        Image(systemName: "video.slash")
-                            .font(.system(size: 30))
-                            .foregroundColor(Color(hex: "484f58"))
-                        Text("FLUX NON DISPONIBLE")
-                            .font(.system(size: 10, design: .monospaced))
-                            .foregroundColor(Color(hex: "484f58"))
-                    }
-                default:
-                    ProgressView().tint(Color(hex: "58a6ff"))
+            if let uiImage = uiImage {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+            } else if isLoading {
+                ProgressView().tint(Color(hex: "58a6ff"))
+            } else {
+                VStack(spacing: 8) {
+                    Image(systemName: "video.slash")
+                        .font(.system(size: 30))
+                        .foregroundColor(Color(hex: "484f58"))
+                    Text("FLUX NON DISPONIBLE")
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundColor(Color(hex: "484f58"))
                 }
             }
+        }
+        .onReceive(timer) { _ in
+            Task { await loadSnapshot() }
+        }
+        .onAppear {
+            Task { await loadSnapshot() }
+        }
+    }
+
+    private func loadSnapshot() async {
+        guard let url = URL(string: "http://192.168.1.138:8090/snapshot?t=\(Date().timeIntervalSince1970)") else { return }
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            if let img = UIImage(data: data) {
+                await MainActor.run { uiImage = img; isLoading = false }
+            }
+        } catch {
+            await MainActor.run { isLoading = false }
         }
     }
 }
