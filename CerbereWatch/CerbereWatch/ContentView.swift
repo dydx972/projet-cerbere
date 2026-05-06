@@ -49,7 +49,7 @@ struct ContentView: View {
         isOpening = true
         statusText = ""
 
-        guard let url = URL(string: "http://192.168.1.120/api/porte_ouvrir.php") else {
+        guard let url = URL(string: "http://192.168.1.199/api/porte_ouvrir.php") else {
             isOpening = false
             statusText = "Erreur URL"
             return

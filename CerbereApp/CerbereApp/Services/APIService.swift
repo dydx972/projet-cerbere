@@ -2,7 +2,7 @@ import Foundation
 
 class APIService {
     static let shared = APIService()
-    let baseURL = "http://192.168.1.120/api"
+    let baseURL = "http://192.168.1.199/api"
     private let session: URLSession
 
     private init() {

@@ -131,10 +131,10 @@ class StreamHandler(server.BaseHTTPRequestHandler):
     <img id="feed" src="/stream" alt="Flux cam\xc3\xa9ra" onerror="this.style.opacity='.3'" />
     <div class="info">
       <span>1280x720 &bull; 25 fps &bull; MJPEG</span>
-      <span>192.168.1.120:8090</span>
+      <span>192.168.1.199:8090</span>
     </div>
   </div>
-  <a class="btn" href="http://192.168.1.120/admin_cerbere.html">&#8592; Retour au panneau admin</a>
+  <a class="btn" href="http://192.168.1.199/admin_cerbere.html">&#8592; Retour au panneau admin</a>
 </div>
 <script>
   function tick(){ document.getElementById('time').textContent = new Date().toLocaleTimeString('fr-FR'); }
@@ -160,5 +160,5 @@ if __name__ == '__main__':
     t.start()
     time.sleep(1)
     httpd = server.HTTPServer(('0.0.0.0', 8090), StreamHandler)
-    print('Stream disponible sur http://192.168.1.120:8090')
+    print('Stream disponible sur http://192.168.1.199:8090')
     httpd.serve_forever()

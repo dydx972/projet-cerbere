@@ -18,7 +18,7 @@
   import time\
 \
   # \uc0\u9472 \u9472 \u9472  CONFIG \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \u9472 \
-  ENDPOINT     = "http://192.168.1.120/api/detections.php"\
+  ENDPOINT     = "http://192.168.1.199/api/detections.php"\
   ID_CAPTEUR   = 1     # 1 = PIR Salle W13  |  2 = PIR Laboratoire\
   SEUIL_ALERTE = 30    # secondes avant de g\'e9n\'e9rer une alerte\
 \

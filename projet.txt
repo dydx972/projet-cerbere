@@ -33,7 +33,7 @@ Le systeme gere :
 +-------+---------+   +---------+---------+   +---------+---------+
 | RASPBERRY PI 1  |   | RASPBERRY PI 2    |   | RASPBERRY PI 3/5  |
 | Controleur RFID |   | Capteur Presence  |   | Serveur Central   |
-| 192.168.1.49    |   | 192.168.1.89      |   | 192.168.1.120     |
+| 192.168.1.49    |   | 192.168.1.89      |   | 192.168.1.199     |
 | SSH: kyriann@   |   | SSH: cerbere@     |   | SSH: pi@          |
 | MDP: pi         |   | MDP: pi           |   | MDP: pi           |
 +-----------------+   +-------------------+   +-------------------+
@@ -71,7 +71,7 @@ Le systeme gere :
                               | HTTP POST /api/badge_check.php
                               | Corps: {"uid": "XXXX", "id_porte": 1}
                               v
-                        [Serveur (192.168.1.120)]
+                        [Serveur (192.168.1.199)]
                               |
                               | Verification en base de donnees :
                               | - Badge existe et actif ?
@@ -98,7 +98,7 @@ Le systeme gere :
 
 3.2 Ouverture a distance (site web / app mobile / Apple Watch)
 ------------------------------------------------------------------------
-[Navigateur/App] --HTTP POST--> [Serveur (192.168.1.120)]
+[Navigateur/App] --HTTP POST--> [Serveur (192.168.1.199)]
                                     /api/porte_ouvrir.php
                                     Corps: {"duree": 5}
                                          |
@@ -134,7 +134,7 @@ Le systeme gere :
                                         |         "alerte_generee": true,
                                         |         "details": "Presence 45s"}
                                         v
-                                  [Serveur (192.168.1.120)]
+                                  [Serveur (192.168.1.199)]
                                         |
                                         | Enregistre la detection
                                         | Si duree > 30s : genere une alerte
@@ -162,7 +162,7 @@ Le systeme gere :
 4. BASE DE DONNEES
 ================================================================================
 
-Serveur : MariaDB sur 192.168.1.120
+Serveur : MariaDB sur 192.168.1.199
 Base    : cerbere_db
 User    : root / pi
 
@@ -277,7 +277,7 @@ CONFIGURATIONS_SYSTEME
 - vue_etat_systeme : etat global (nb portes, capteurs, cameras, users)
 
 
-5. API REST (Serveur 192.168.1.120)
+5. API REST (Serveur 192.168.1.199)
 ================================================================================
 
 Toutes les API sont en PHP, situees dans /var/www/html/api/
@@ -389,7 +389,7 @@ pir-detection.service :
   User=root
   Restart=on-failure, RestartSec=10
 
-7.3 Pi Serveur (192.168.1.120)
+7.3 Pi Serveur (192.168.1.199)
 ------------------------------------------------------------------------
 - apache2.service (serveur web)
 - mariadb.service (base de donnees)
@@ -407,7 +407,7 @@ camera-stream.service :
 8. SITE WEB D'ADMINISTRATION
 ================================================================================
 
-URL : http://192.168.1.120/admin_cerbere.html
+URL : http://192.168.1.199/admin_cerbere.html
 Identifiants : admin / admin123
 
 Fichier unique HTML avec CSS et JavaScript integres (81 Ko)
@@ -456,7 +456,7 @@ Structure :
   +-- Info.plist                   ATS desactive + NFC usage
   +-- CerbereApp.entitlements      NFC reader session
 
-Connexion API : http://192.168.1.120/api
+Connexion API : http://192.168.1.199/api
 Camera snapshot : http://192.168.1.138:8090/snapshot (refresh 0.3s)
 
 Fonctionnalites specifiques mobile :
@@ -497,7 +497,7 @@ Langage : Swift / SwiftUI
 Cible : watchOS
 
 Application minimale avec un bouton pour ouvrir la porte a distance.
-Envoie un POST vers http://192.168.1.120/api/porte_ouvrir.php
+Envoie un POST vers http://192.168.1.199/api/porte_ouvrir.php
 
 
 12. SECURITE

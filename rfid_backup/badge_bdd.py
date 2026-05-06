@@ -17,7 +17,7 @@ import subprocess
 import json
 
 # ─── CONFIGURATION ────────────────────────────────────────────
-SERVEUR        = "http://192.168.1.120"
+SERVEUR        = "http://192.168.1.199"
 ID_PORTE       = 1
 
 RELAY_PIN      = 22

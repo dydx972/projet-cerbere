@@ -18,7 +18,7 @@ import hashlib
 import os
 
 # ─── CONFIGURATION ────────────────────────────────────────────
-SERVEUR        = "http://192.168.1.120"
+SERVEUR        = "http://192.168.1.199"
 ID_PORTE       = 1
 DOOR_OPEN_SECS = 5
 ANTI_REBOND    = 2

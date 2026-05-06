@@ -37,7 +37,7 @@ struct DetectionsView: View {
                             }
                         }
                         if let url = det.capture_url {
-                            AsyncImage(url: URL(string: "http://192.168.1.120\(url)")) { phase in
+                            AsyncImage(url: URL(string: "http://192.168.1.199\(url)")) { phase in
                                 switch phase {
                                 case .success(let image):
                                     image.resizable().aspectRatio(contentMode: .fill)
@@ -119,7 +119,7 @@ struct RaspberryPiView: View {
     let pis = [
         ("Controleur RFID / Gache / Ventouse", "192.168.1.49", "kyriann@", "LECTEUR RFID - GACHE - VENTOUSE"),
         ("Capteur de Presence", "192.168.1.89", "cerbere@", "CAPTEUR PIR - DETECTION DE PRESENCE"),
-        ("Serveur / Camera", "192.168.1.120", "pi@", "SERVEUR PRINCIPAL - CAMERA - MYSQL - APACHE")
+        ("Serveur / Camera", "192.168.1.199", "pi@", "SERVEUR PRINCIPAL - CAMERA - MYSQL - APACHE")
     ]
 
     var body: some View {

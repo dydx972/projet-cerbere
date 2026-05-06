@@ -1,0 +1,33 @@
+R_DEF: Internal format may change without notice
+local
+color bg_dark
+color blue
+color border
+color card_dark
+color green
+color orange
+color red
+color text
+color text_muted
+drawable card_bg_dark
+drawable card_bg_green
+drawable card_bg_red
+drawable card_bg_yellow
+drawable ic_launcher
+id badgeCountText
+id badgeList
+id badgeName
+id badgeUid
+id deleteBtn
+id lastBadgeText
+id modeSwitch
+id statusCard
+id statusDetail
+id statusIcon
+id statusText
+layout activity_main
+layout badge_row
+string app_name
+style DialogTheme
+style Theme.Cerbere
+xml nfc_tech_filter

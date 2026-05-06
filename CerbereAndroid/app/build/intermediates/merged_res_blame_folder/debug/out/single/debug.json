@@ -1,0 +1,34 @@
+[
+    {
+        "merged": "com.cerbere.nfc.app-merged_res-31:/drawable_card_bg_dark.xml.flat",
+        "source": "com.cerbere.nfc.app-main-33:/drawable/card_bg_dark.xml"
+    },
+    {
+        "merged": "com.cerbere.nfc.app-merged_res-31:/xml_nfc_tech_filter.xml.flat",
+        "source": "com.cerbere.nfc.app-main-33:/xml/nfc_tech_filter.xml"
+    },
+    {
+        "merged": "com.cerbere.nfc.app-merged_res-31:/drawable_card_bg_yellow.xml.flat",
+        "source": "com.cerbere.nfc.app-main-33:/drawable/card_bg_yellow.xml"
+    },
+    {
+        "merged": "com.cerbere.nfc.app-merged_res-31:/drawable_card_bg_green.xml.flat",
+        "source": "com.cerbere.nfc.app-main-33:/drawable/card_bg_green.xml"
+    },
+    {
+        "merged": "com.cerbere.nfc.app-merged_res-31:/layout_badge_row.xml.flat",
+        "source": "com.cerbere.nfc.app-main-33:/layout/badge_row.xml"
+    },
+    {
+        "merged": "com.cerbere.nfc.app-merged_res-31:/drawable_ic_launcher.xml.flat",
+        "source": "com.cerbere.nfc.app-main-33:/drawable/ic_launcher.xml"
+    },
+    {
+        "merged": "com.cerbere.nfc.app-merged_res-31:/drawable_card_bg_red.xml.flat",
+        "source": "com.cerbere.nfc.app-main-33:/drawable/card_bg_red.xml"
+    },
+    {
+        "merged": "com.cerbere.nfc.app-merged_res-31:/layout_activity_main.xml.flat",
+        "source": "com.cerbere.nfc.app-main-33:/layout/activity_main.xml"
+    }
+]

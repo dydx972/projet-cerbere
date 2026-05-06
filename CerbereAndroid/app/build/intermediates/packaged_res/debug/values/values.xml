@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_dark">#0D1117</color>
+    <color name="blue">#58A6FF</color>
+    <color name="border">#30363D</color>
+    <color name="card_dark">#161B22</color>
+    <color name="green">#3FB950</color>
+    <color name="orange">#D29922</color>
+    <color name="red">#F85149</color>
+    <color name="text">#FFFFFF</color>
+    <color name="text_muted">#8B949E</color>
+    <string name="app_name">CERBERE NFC</string>
+    <style name="DialogTheme" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="colorPrimary">#58A6FF</item>
+        <item name="android:background">#161B22</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:textColorSecondary">#8B949E</item>
+    </style>
+    <style name="Theme.Cerbere" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#58A6FF</item>
+        <item name="colorPrimaryVariant">#388BFD</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="android:statusBarColor">#0D1117</item>
+        <item name="android:navigationBarColor">#0D1117</item>
+        <item name="android:windowBackground">#0D1117</item>
+    </style>
+</resources>

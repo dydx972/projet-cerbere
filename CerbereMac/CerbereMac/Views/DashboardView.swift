@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import WebKit
 
 struct DashboardView: View {
     @State private var logs: [LogAcces] = []
@@ -126,48 +127,26 @@ struct KPICard: View {
     }
 }
 
-struct CameraStreamView: View {
-    @State private var nsImage: NSImage?
-    @State private var isLoading = true
-    private let timer = Timer.publish(every: 0.3, on: .main, in: .common).autoconnect()
-
-    var body: some View {
-        ZStack {
-            Color.black
-            if let nsImage = nsImage {
-                Image(nsImage: nsImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            } else if isLoading {
-                ProgressView().tint(Color(hex: "58a6ff"))
-            } else {
-                VStack(spacing: 8) {
-                    Image(systemName: "video.slash")
-                        .font(.system(size: 30))
-                        .foregroundColor(Color(hex: "484f58"))
-                    Text("FLUX NON DISPONIBLE")
-                        .font(.system(size: 10, design: .monospaced))
-                        .foregroundColor(Color(hex: "484f58"))
-                }
-            }
-        }
-        .onReceive(timer) { _ in
-            Task { await loadSnapshot() }
-        }
-        .onAppear {
-            Task { await loadSnapshot() }
-        }
+struct CameraStreamView: NSViewRepresentable {
+    func makeNSView(context: Context) -> WKWebView {
+        let config = WKWebViewConfiguration()
+        config.websiteDataStore = .nonPersistent()
+        let webView = WKWebView(frame: .zero, configuration: config)
+        webView.setValue(false, forKey: "drawsBackground")
+        let html = """
+        <html>
+        <head><style>
+        * { margin:0; padding:0; background:#000; }
+        img { width:100%; height:100vh; object-fit:contain; }
+        </style></head>
+        <body>
+        <img src="http://192.168.1.138:8090/stream" onerror="setTimeout(()=>{this.src='http://192.168.1.138:8090/stream?t='+Date.now()},2000)" />
+        </body>
+        </html>
+        """
+        webView.loadHTMLString(html, baseURL: nil)
+        return webView
     }
 
-    private func loadSnapshot() async {
-        guard let url = URL(string: "http://192.168.1.138:8090/snapshot?t=\(Date().timeIntervalSince1970)") else { return }
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            if let img = NSImage(data: data) {
-                await MainActor.run { nsImage = img; isLoading = false }
-            }
-        } catch {
-            await MainActor.run { isLoading = false }
-        }
-    }
+    func updateNSView(_ nsView: WKWebView, context: Context) {}
 }

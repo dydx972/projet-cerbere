@@ -6,7 +6,7 @@ PIR_PIN = 17
 LED_PIN = 18
 
 # Adresse du serveur de ton equipier
-ENDPOINT   = "http://192.168.1.120/api/detections.php"
+ENDPOINT   = "http://192.168.1.199/api/detections.php"
 ID_CAPTEUR = 1      # PIR Salle W13
 SEUIL_ALERTE = 30   # secondes : si detection > 30s, une alerte est generee
 
